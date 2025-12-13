@@ -1,6 +1,5 @@
-import { useNavigate } from "react-router-dom";
 import useSound from "@/hooks/useSound";
-import HomeNavBtn from "@/components/ui/HomeNavBtn";
+import NavButton from "@/components/ui/NavButton";
 
 interface Route {
   text: string;
@@ -14,35 +13,24 @@ const routes: Route[] = [
 ];
 
 const WelcomeScreen = () => {
-  const navigate = useNavigate();
-  const [isSoundOn, toggleSound] = useSound();
+  const { isSoundOn, toggleSound } = useSound();
 
   return (
     <main className="w-full flex flex-col items-center gap-4 mt-14">
-      <h1
-        className="inline-block text-center text-accent text-4xl
-      [-webkit-text-stroke:2px_rgb(var(--foreground))] transform scale-x-110 -rotate-3"
-      >
-        Emoji <br /> Guessing <br /> Game
+      <h1 className="inline-block text-center text-accent text-4xl text-shadow [-webkit-text-stroke:2px_rgb(var(--foreground))] [text-shadow:4px_4px_8px_rgba(0,0,0,0.3)] transform scale-x-110 -rotate-3">
+        Solve <br /> Emoji <br /> Puzzles!
       </h1>
 
       <div className="w-full flex flex-col items-center gap-2 mt-16">
         {routes.map(route => (
-          <div
-            key={route.path}
-            className="w-40 flex items-center justify-center bg-accent p-2 rounded-2xl -rotate-3"
-          >
-            <HomeNavBtn onClick={() => navigate(`${route.path}`)}>
-              {route.text}
-            </HomeNavBtn>
-          </div>
+          <NavButton key={route.path} to={route.path}>
+            {route.text}
+          </NavButton>
         ))}
 
-        <div className="w-40 flex items-center justify-center bg-accent p-2 rounded-2xl -rotate-3">
-          <HomeNavBtn onClick={toggleSound}>
-            sound: <strong> {isSoundOn ? "on" : "off"}</strong>
-          </HomeNavBtn>
-        </div>
+        <NavButton onClick={toggleSound}>
+          sound: <strong>{isSoundOn ? "on" : "off"}</strong>
+        </NavButton>
       </div>
     </main>
   );
