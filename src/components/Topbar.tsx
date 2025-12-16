@@ -1,3 +1,4 @@
+import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { Github, Twitter } from "lucide-react";
 
@@ -11,7 +12,15 @@ const Topbar = () => {
   return (
     <ul className="w-screen flex flex-row items-center justify-between bg-background border-b px-4 pt-5 pb-3">
       <li onClick={() => navigate("/")}>
-        <h1 className="text-2xl"> Emojinary </h1>
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 0.8 }}
+          style={{ transformOrigin: "left" }}
+          className="overflow-hidden inline-block"
+        >
+          <h1 className="text-2xl"> Emojinary </h1>
+        </motion.div>
       </li>
 
       <li className="flex items-center justify-center gap-4 -mt-1">
