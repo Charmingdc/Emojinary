@@ -8,6 +8,7 @@ import useSound from "@/hooks/useSound";
 interface GameControlProps {
   showHint: boolean;
   setShowHint: Dispatch<SetStateAction<boolean>>;
+  setUsedHint: Dispatch<SetStateAction<boolean>>;
   currentPuzzleIdx: number;
   setCurrentPuzzleIdx: Dispatch<SetStateAction<number>>;
   puzzleCount: number;
@@ -17,6 +18,7 @@ interface GameControlProps {
 const GameControls: React.FC<GameControlProps> = ({
   showHint,
   setShowHint,
+  setUsedHint,
   currentPuzzleIdx,
   setCurrentPuzzleIdx,
   puzzleCount,
@@ -24,6 +26,11 @@ const GameControls: React.FC<GameControlProps> = ({
 }) => {
   const { isSoundOn, toggleSound } = useSound();
   const isLast = currentPuzzleIdx + 1 === puzzleCount;
+
+  const handleHintClick = () => {
+    setUsedHint(true);
+    setShowHint(prev => !prev);
+  };
 
   return (
     <div className="w-20 flex flex-col items-center justify-between gap-4">
@@ -35,7 +42,7 @@ const GameControls: React.FC<GameControlProps> = ({
         )}
       </ControlButton>
 
-      <ControlButton onClick={() => setShowHint(prev => !prev)}>
+      <ControlButton onClick={handleHintClick}>
         <Lightbulb
           size={24}
           className={`${showHint ? "text-accent" : "text-primary"}`}
@@ -46,6 +53,7 @@ const GameControls: React.FC<GameControlProps> = ({
         disabled={isLast}
         onClick={() => {
           setShowHint(false);
+          setUsedHint(false);
           setCurrentPuzzleIdx(prev => prev + 1);
           resetTimer();
         }}

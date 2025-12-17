@@ -25,7 +25,7 @@ export default {
       boxShadow: {
         neumorphic: "4px 4px 0px rgb(var(--border))",
         "neumorphic-pressed":
-          "inset 6px 6px 2px rgb(var(--card-foreground)), inset -1px -1px 2px rgb(var(--card-foreground)) ",
+          "inset 6px 6px 2px rgb(var(--border)), inset -1px -1px 2px rgb(var(--border)) ",
         "neumorphic-choc": "4px 4px 0px rgb(var(--card))",
         "neumorphic-choc-pressed":
           "inset 6px 6px 2px rgb(var(--card)), inset -1px -1px 2px rgb(var(--card))"

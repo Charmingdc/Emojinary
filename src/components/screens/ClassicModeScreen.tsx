@@ -1,107 +1,92 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import StatsBar from "@/components/ui/StatsBar";
 import GameControls from "@/components/GameControls";
 import PuzzleBox from "@/components/ui/PuzzleBox";
+import AnswerSlots from "@/components/ui/AnswerSlots";
+import LetterPool from "@/components/ui/LetterPool";
 
+import shuffleArray from "@/utils/shuffleArray";
+import calculatePoints from "@/utils/calculatePoints";
 import usePerPuzzleTimer from "@/hooks/usePerPuzzleTimer";
-import type { Puzzle } from "@/types";
 
-const puzzles: Puzzle[] = [
-  {
-    emojis: ["☁️", "⬆️", "📤"],
-    answer: "upload",
-    letters: ["U", "P", "L", "O", "A", "D", "X", "T"],
-    hint: "Sending files to the cloud or server",
-    difficulty: "easy"
-  },
-  {
-    emojis: ["💻", "👨‍💻", "⚡"],
-    answer: "developer",
-    letters: ["D", "E", "V", "E", "L", "O", "P", "E", "R", "X", "A"],
-    hint: "Person who writes code",
-    difficulty: "easy"
-  },
-  {
-    emojis: ["🤖", "🧠", "📊"],
-    answer: "AI",
-    letters: ["A", "I", "X", "Y", "Z"],
-    hint: "Machines that can learn and think",
-    difficulty: "medium"
-  },
-  {
-    emojis: ["📜", "➰", "🧩"],
-    answer: "algorithm",
-    letters: ["A", "L", "G", "O", "R", "I", "T", "H", "M", "X", "E"],
-    hint: "Step-by-step instructions to solve a problem",
-    difficulty: "medium"
-  },
-  {
-    emojis: ["🔐", "🛡️", "🔑"],
-    answer: "encryption",
-    letters: ["E", "N", "C", "R", "Y", "P", "T", "I", "O", "N", "S"],
-    hint: "Securing data from unauthorized access",
-    difficulty: "hard"
-  },
-  {
-    emojis: ["🌐", "💻", "🖥️"],
-    answer: "network",
-    letters: ["N", "E", "T", "W", "O", "R", "K", "A", "X"],
-    hint: "Connected computers sharing data",
-    difficulty: "medium"
-  },
-  {
-    emojis: ["🗄️", "💾", "📂"],
-    answer: "database",
-    letters: ["D", "A", "T", "A", "B", "A", "S", "E", "X", "L"],
-    hint: "Stores structured information",
-    difficulty: "medium"
-  },
-  {
-    emojis: ["🖥️", "⚙️", "🔄"],
-    answer: "software",
-    letters: ["S", "O", "F", "T", "W", "A", "R", "E", "X"],
-    hint: "Programs that run on computers",
-    difficulty: "easy"
-  },
-  {
-    emojis: ["📦", "📤", "🌐"],
-    answer: "deployment",
-    letters: ["D", "E", "P", "L", "O", "Y", "M", "E", "N", "T", "A"],
-    hint: "Releasing code to production",
-    difficulty: "medium"
-  },
-  {
-    emojis: ["🐛", "🔍", "🛠️"],
-    answer: "debugging",
-    letters: ["D", "E", "B", "U", "G", "G", "I", "N", "G", "X"],
-    hint: "Finding and fixing errors in code",
-    difficulty: "medium"
-  }
-];
+import puzzles from "@/puzzles";
 
 const ClassicModeScreen = () => {
   const [currentPuzzleIdx, setCurrentPuzzleIdx] = useState<number>(0);
+  const [selectedLetters, setSelectedLetters] = useState<string[]>([]);
+  const [letterPool, setLetterPool] = useState<string[]>([]);
   const [points, setPoints] = useState<number>(0);
   const [showHint, setShowHint] = useState<boolean>(false);
+  const [usedHint, setUsedHint] = useState<boolean>(false);
 
   const puzzleCount = puzzles.length;
   const currentPuzzle = puzzles[currentPuzzleIdx];
   const difficulty = currentPuzzle.difficulty;
 
   const handleTimerExpire = () => {
-    setCurrentPuzzleIdx(prev => (prev < puzzleCount - 1 ? prev + 1 : prev));
-    setShowHint(false);
+    goToNextPuzzle();
   };
 
-  const { formatTime, reset } = usePerPuzzleTimer({
+  const goToNextPuzzle = () => {
+    setCurrentPuzzleIdx(prev => (prev < puzzleCount - 1 ? prev + 1 : prev));
+    setShowHint(false);
+    setUsedHint(false);
+    setSelectedLetters(Array(currentPuzzle.answer.length).fill(""));
+  };
+
+  const handleSlotClick = (index: number) => {
+    const next = [...selectedLetters];
+    next[index] = "";
+    setSelectedLetters(next);
+  };
+
+  const handleLetterClick = (letter: string) => {
+    const emptyIndex = selectedLetters.indexOf("");
+    if (emptyIndex === -1) return;
+
+    const next = [...selectedLetters];
+    next[emptyIndex] = letter;
+    setSelectedLetters(next);
+  };
+
+  const handleCorrectAnswer = () => {
+    const earned = calculatePoints(
+      currentPuzzle.difficulty,
+      remainingTime,
+      usedHint
+    );
+
+    setPoints(prev => prev + earned);
+    goToNextPuzzle();
+  };
+
+  const {
+    seconds: remainingTime,
+    formatTime,
+    reset
+  } = usePerPuzzleTimer({
     difficulty,
     trigger: currentPuzzleIdx,
     onExpire: handleTimerExpire
   });
 
+  useEffect(() => {
+    setSelectedLetters(Array(currentPuzzle.answer.length).fill(""));
+    setLetterPool(shuffleArray(currentPuzzle.letters));
+  }, [currentPuzzle]);
+
+  useEffect(() => {
+    if (!selectedLetters.includes("")) {
+      const userAnswer = selectedLetters.join("").toLowerCase();
+      if (userAnswer === currentPuzzle.answer.toLowerCase()) {
+        handleCorrectAnswer();
+      }
+    }
+  }, [selectedLetters, currentPuzzle]);
+
   return (
-    <main className="w-full flex flex-col items-center gap-3 p-4">
+    <main className="w-full flex flex-col items-center gap-3 p-4 pb-12">
       <h2 className="self-start -mt-4"> 🕹️ Classic Mode </h2>
 
       <StatsBar
@@ -121,11 +106,13 @@ const ClassicModeScreen = () => {
           <GameControls
             showHint={showHint}
             setShowHint={setShowHint}
+            setUsedHint={setUsedHint}
             currentPuzzleIdx={currentPuzzleIdx}
             setCurrentPuzzleIdx={setCurrentPuzzleIdx}
             puzzleCount={puzzleCount}
             resetTimer={reset}
           />
+
           <PuzzleBox puzzle={currentPuzzle} />
         </div>
 
@@ -136,6 +123,9 @@ const ClassicModeScreen = () => {
           </p>
         )}
       </div>
+
+      <AnswerSlots slots={selectedLetters} onSlotClick={handleSlotClick} />
+      <LetterPool letters={letterPool} onLetterClick={handleLetterClick} />
     </main>
   );
 };
