@@ -6,31 +6,18 @@
 @tailwind utilities;
 
 @layer base {
-  /*:root {
-    --background: 250 249 246;
-    --foreground: 28 28 28;
-    --border: 220 220 220;
-    --card: 255 255 255;
-    --card-foreground: 28 28 28;
-    --primary: 78 205 196;
-    --secondary: 255 107 107;
-    --success: 29 209 161;qp
-    --accent: 255 217 61;
-  }*/
-
   :root {
     --background: 249 245 233;
     --foreground: 40 37 33;
     --border: 230 225 214;
-    --card: 255 253 248;
-    --card-foreground: 40 37 33;
+    --card: 40 37 33;
+    --card-foreground: 250 238 226;
     --primary: 78 205 196;
     --secondary: 255 107 107;
     --success: 29 209 161;
     --accent: 255 217 61;
   }
 
-  /* Reset & base styles */
   *,
   *::before,
   *::after {

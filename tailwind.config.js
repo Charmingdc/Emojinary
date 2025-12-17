@@ -21,6 +21,14 @@ export default {
         secondary: "rgb(var(--secondary) / <alpha-value>)",
         success: "rgb(var(--success) / <alpha-value>)",
         accent: "rgb(var(--accent) / <alpha-value>)"
+      },
+      boxShadow: {
+        neumorphic: "4px 4px 0px rgb(var(--border))",
+        "neumorphic-pressed":
+          "inset 6px 6px 2px rgb(var(--card-foreground)), inset -1px -1px 2px rgb(var(--card-foreground)) ",
+        "neumorphic-choc": "4px 4px 0px rgb(var(--card))",
+        "neumorphic-choc-pressed":
+          "inset 6px 6px 2px rgb(var(--card)), inset -1px -1px 2px rgb(var(--card))"
       }
     }
   },
