@@ -15,7 +15,8 @@ const ControlButton: React.FC<ButtonProps> = ({ children, ...props }) => {
       {...props}
       onClick={handleClick}
       className="bg-background w-14 h-14 flex justify-center items-center border
-      rounded-xl shadow-neumorphic-choc active:shadow-neumorphic-choc-pressed transition-shadow duration-200"
+      rounded-xl shadow-neumorphic-choc active:shadow-neumorphic-choc-pressed
+      disabled:opacity-30 transition-shadow duration-200"
     >
       {children}
     </button>
