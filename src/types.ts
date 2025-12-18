@@ -7,3 +7,5 @@ interface Puzzle {
   hint: string;
   difficulty: Difficulty;
 }
+
+export type { Difficulty, Puzzle };

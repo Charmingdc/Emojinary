@@ -5,20 +5,26 @@ import GameControls from "@/components/GameControls";
 import PuzzleBox from "@/components/ui/PuzzleBox";
 import AnswerSlots from "@/components/ui/AnswerSlots";
 import LetterPool from "@/components/ui/LetterPool";
+import CorrectAnswerBanner from "@/components/ui/CorrectAnswerBanner";
 
 import { shuffleArray, calculatePoints, vibrate } from "@/utils";
 import usePerPuzzleTimer from "@/hooks/usePerPuzzleTimer";
+import useGameAudio from "@/hooks/useGameAudio";
 
 import puzzles from "@/puzzles";
 
+type AnswerState = "neutral" | "correct" | "wrong";
+
 const ClassicModeScreen = () => {
+  const { play } = useGameAudio();
+
   const [currentPuzzleIdx, setCurrentPuzzleIdx] = useState(0);
   const [selectedLetters, setSelectedLetters] = useState<string[]>([]);
   const [letterPool, setLetterPool] = useState<string[]>([]);
   const [points, setPoints] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [usedHint, setUsedHint] = useState(false);
-  const [isWrongAnswer, setIsWrongAnswer] = useState(false);
+  const [answerState, setAnswerState] = useState<AnswerState>("neutral");
 
   const puzzleCount = puzzles.length;
   const currentPuzzle = puzzles[currentPuzzleIdx];
@@ -43,7 +49,7 @@ const ClassicModeScreen = () => {
     setSelectedLetters(Array(currentPuzzle.answer.length).fill(""));
     setShowHint(false);
     setUsedHint(false);
-    setIsWrongAnswer(false); // reset wrong answer on new puzzle
+    setAnswerState("neutral");
   };
 
   /* Input */
@@ -51,7 +57,7 @@ const ClassicModeScreen = () => {
     const next = [...selectedLetters];
     next[index] = "";
     setSelectedLetters(next);
-    setIsWrongAnswer(false); // reset wrong answer when slot is emptied
+    setAnswerState("neutral");
   };
 
   const handleLetterClick = (letter: string) => {
@@ -71,20 +77,24 @@ const ClassicModeScreen = () => {
       usedHint
     );
     setPoints(prev => prev + earned);
-    goToNextPuzzle();
+    setAnswerState("correct");
+
+    setTimeout(() => {
+      goToNextPuzzle();
+    }, 500);
   };
 
   /* Puzzle Init */
   useEffect(() => {
     setSelectedLetters(Array(currentPuzzle.answer.length).fill(""));
     setLetterPool(shuffleArray(currentPuzzle.letters));
-    setIsWrongAnswer(false); // reset wrong answer when puzzle changes
+    setAnswerState("neutral");
   }, [currentPuzzle]);
 
   /* Answer Check */
   useEffect(() => {
     if (selectedLetters.includes("")) {
-      setIsWrongAnswer(false); // incomplete answer, can't be wrong yet
+      setAnswerState("neutral");
       return;
     }
 
@@ -92,10 +102,12 @@ const ClassicModeScreen = () => {
     const correctAnswer = currentPuzzle.answer.toLowerCase();
 
     if (userAnswer === correctAnswer) {
+      setAnswerState("correct");
+      play("correct");
       handleCorrectAnswer();
     } else {
-      setIsWrongAnswer(true); // full answer but incorrect
-      vibrate([60, 30, 60]);
+      setAnswerState("wrong");
+      vibrate([80, 10, 80]);
     }
   }, [selectedLetters, currentPuzzle]);
 
@@ -140,10 +152,12 @@ const ClassicModeScreen = () => {
       <AnswerSlots
         slots={selectedLetters}
         onSlotClick={handleSlotClick}
-        isWrongAnswer={isWrongAnswer}
+        answerState={answerState}
       />
 
       <LetterPool letters={letterPool} onLetterClick={handleLetterClick} />
+
+      {answerState === "correct" && <CorrectAnswerBanner />}
     </main>
   );
 };

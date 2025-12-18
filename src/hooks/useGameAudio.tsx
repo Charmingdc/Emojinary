@@ -10,7 +10,9 @@ const useGameAudio = () => {
     click: Object.assign(new Audio("/sounds/button-press.mp3"), {
       volume: 0.2
     }),
-    correct: Object.assign(new Audio("/sounds/correct.mp3"), { volume: 0.7 }),
+    correct: Object.assign(new Audio("/sounds/correct-answer.mp3"), {
+      volume: 0.7
+    }),
     wrong: Object.assign(new Audio("/sounds/wrong.mp3"), { volume: 0.6 })
   });
 

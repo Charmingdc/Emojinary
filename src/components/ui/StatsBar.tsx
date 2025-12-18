@@ -10,7 +10,11 @@ interface StatsObj {
   difficulty: Difficulty;
 }
 
-const StatsBar: React.FC<StatsObj> = ({ stats }) => {
+interface StatsBarProps {
+  stats: StatsObj;
+}
+
+const StatsBar: React.FC<StatsBarProps> = ({ stats }) => {
   const { currentPuzzleIdx, puzzleCount, points, time, difficulty } = stats;
 
   return (

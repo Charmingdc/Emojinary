@@ -36,10 +36,38 @@ export default {
           "45%": { transform: "translateX(-3px)" },
           "60%": { transform: "translateX(3px)" },
           "75%": { transform: "translateX(-2px)" }
+        },
+        pop: {
+          "0%": {
+            transform: "scale(0.8)",
+            opacity: "0",
+            "text-shadow": "0 0 0 rgba(0,0,0,0)"
+          },
+          "40%": {
+            transform: "scale(1.2)",
+            opacity: "1",
+            "text-shadow": `
+              0 4px 10px rgba(255,255,255,0.8),
+              0 8px 20px rgba(255,255,255,0.6),
+              0 12px 30px rgba(255,255,255,0.4)
+            `
+          },
+          "60%": {
+            transform: "scale(0.95)",
+            "text-shadow": `
+              0 2px 6px rgba(255,255,255,0.6),
+              0 4px 12px rgba(255,255,255,0.4)
+            `
+          },
+          "100%": {
+            transform: "scale(1)",
+            "text-shadow": "0 1px 4px rgba(255,255,255,0.3)"
+          }
         }
       },
       animation: {
-        "wobble-x": "wobbleX 0.4s ease-in-out"
+        "wobble-x": "wobbleX 0.4s ease-in-out",
+        pop: "pop 0.8s ease-out forwards"
       }
     }
   },

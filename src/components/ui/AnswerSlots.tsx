@@ -3,25 +3,36 @@ import useGameAudio from "@/hooks/useGameAudio";
 interface AnswerSlotsProps {
   slots: string[];
   onSlotClick: (idx: number) => void;
-  isWrongAnswer: boolean;
+  answerState: "neutral" | "wrong" | "correct";
 }
 
 const AnswerSlots: React.FC<AnswerSlotsProps> = ({
   slots,
   onSlotClick,
-  isWrongAnswer
+  answerState
 }) => {
-  console.log(isWrongAnswer);
   const { play } = useGameAudio();
+
+  const borderClass =
+    answerState === "correct"
+      ? "border-primary"
+      : answerState === "wrong"
+      ? "border-secondary"
+      : "border-transparent";
+
+  const animationClass =
+    answerState === "wrong"
+      ? "animate-wobble-x"
+      : answerState === "correct"
+      ? "scale-105 transition-transform duration-200"
+      : "";
 
   return (
     <div className="w-full flex flex-col items-center gap-2 mt-6">
       <p className="text-sm text-gray-500 select-none">Answer Slots</p>
 
       <div
-        className={`w-full flex flex-wrap justify-center gap-2 ${
-          isWrongAnswer ? "animate-wobble-x [&_button]:border-secondary" : ""
-        }`}
+        className={`w-full flex flex-wrap justify-center gap-2 ${animationClass}`}
       >
         {slots.map((letter, idx) => {
           const shadowClass = letter
@@ -31,11 +42,20 @@ const AnswerSlots: React.FC<AnswerSlotsProps> = ({
           return (
             <button
               key={idx}
+              disabled={answerState === "correct"}
               onClick={() => {
                 if (letter) onSlotClick(idx);
                 play("click");
               }}
-              className={`w-12 h-12 rounded-lg bg-[rgb(249,245,233)] flex justify-center items-center appearance-none border-[0.0625rem] border-transparent transition-all duration-200 ease-out ${shadowClass}`}
+              className={`
+                w-12 h-12 rounded-lg
+                bg-[rgb(249,245,233)]
+                flex justify-center items-center
+                appearance-none
+                border-[0.0625rem] ${borderClass}
+                transition-all duration-200 ease-out
+                ${shadowClass}
+              `}
             >
               {letter}
             </button>
