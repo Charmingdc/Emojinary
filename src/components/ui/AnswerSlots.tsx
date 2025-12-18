@@ -3,16 +3,26 @@ import useGameAudio from "@/hooks/useGameAudio";
 interface AnswerSlotsProps {
   slots: string[];
   onSlotClick: (idx: number) => void;
+  isWrongAnswer: boolean;
 }
 
-const AnswerSlots: React.FC<AnswerSlotsProps> = ({ slots, onSlotClick }) => {
+const AnswerSlots: React.FC<AnswerSlotsProps> = ({
+  slots,
+  onSlotClick,
+  isWrongAnswer
+}) => {
+  console.log(isWrongAnswer);
   const { play } = useGameAudio();
 
   return (
     <div className="w-full flex flex-col items-center gap-2 mt-6">
       <p className="text-sm text-gray-500 select-none">Answer Slots</p>
 
-      <div className="w-full flex flex-wrap justify-center gap-2">
+      <div
+        className={`w-full flex flex-wrap justify-center gap-2 ${
+          isWrongAnswer ? "animate-wobble-x [&_button]:border-secondary" : ""
+        }`}
+      >
         {slots.map((letter, idx) => {
           const shadowClass = letter
             ? "shadow-[4px_4px_8px_rgb(230,225,215),-4px_-4px_8px_rgb(245,241,228)]"
@@ -22,11 +32,10 @@ const AnswerSlots: React.FC<AnswerSlotsProps> = ({ slots, onSlotClick }) => {
             <button
               key={idx}
               onClick={() => {
-                letter && onSlotClick(idx);
+                if (letter) onSlotClick(idx);
                 play("click");
               }}
-              className={`w-12 h-12 rounded-lg bg-[rgb(249,245,233)] flex justify-center items-center
-              transition-shadow duration-150 ease-out ${shadowClass}`}
+              className={`w-12 h-12 rounded-lg bg-[rgb(249,245,233)] flex justify-center items-center appearance-none border-[0.0625rem] border-transparent transition-all duration-200 ease-out ${shadowClass}`}
             >
               {letter}
             </button>

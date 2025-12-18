@@ -1,6 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-
-// tailwind.config.js
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
@@ -25,10 +23,23 @@ export default {
       boxShadow: {
         neumorphic: "4px 4px 0px rgb(var(--border))",
         "neumorphic-pressed":
-          "inset 6px 6px 2px rgb(var(--border)), inset -1px -1px 2px rgb(var(--border)) ",
+          "inset 6px 6px 2px rgb(var(--border)), inset -1px -1px 2px rgb(var(--border))",
         "neumorphic-choc": "4px 4px 0px rgb(var(--card))",
         "neumorphic-choc-pressed":
           "inset 6px 6px 2px rgb(var(--card)), inset -1px -1px 2px rgb(var(--card))"
+      },
+      keyframes: {
+        wobbleX: {
+          "0%, 100%": { transform: "translateX(0)" },
+          "15%": { transform: "translateX(-4px)" },
+          "30%": { transform: "translateX(4px)" },
+          "45%": { transform: "translateX(-3px)" },
+          "60%": { transform: "translateX(3px)" },
+          "75%": { transform: "translateX(-2px)" }
+        }
+      },
+      animation: {
+        "wobble-x": "wobbleX 0.4s ease-in-out"
       }
     }
   },
