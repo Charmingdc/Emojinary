@@ -2,8 +2,8 @@
 
 ## Overview
 
-![Emojinary Playing Interface](/emojinary-screenshot-1.jpg)
-![Emojinary Game End Interface](/emojinary-screenshot-2.jpg)
+![Emojinary Playing Interface](/public/emojinary-screenshot-2.jpg)
+![Emojinary Game End Interface](/public/emojinary-screenshot-1.jpg)
 
 Emojinary is a high-performance, interactive word puzzle game where players decode emoji sequences to identify technology-related concepts. Built with **React 19**, **TypeScript**, and **Vite**, the application features a polished neumorphic UI, real-time game logic, and a dynamic scoring system tailored for a seamless user experience.
 
