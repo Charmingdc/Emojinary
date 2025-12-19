@@ -13,6 +13,7 @@ import { shuffleArray, calculatePoints, vibrate } from "@/utils";
 import usePerPuzzleTimer from "@/hooks/usePerPuzzleTimer";
 import useGameAudio from "@/hooks/useGameAudio";
 import usePuzzleInput from "@/hooks/usePuzzleInput";
+import useBestScore from "@/hooks/useBestScore";
 
 import puzzles from "@/puzzles";
 
@@ -20,6 +21,7 @@ type AnswerState = "neutral" | "correct" | "wrong";
 
 const ClassicModeScreen = () => {
   const { play } = useGameAudio();
+  const { bestScore, updateBestScore } = useBestScore();
   const navigate = useNavigate();
 
   const [currentPuzzleIdx, setCurrentPuzzleIdx] = useState(0);
@@ -97,6 +99,12 @@ const ClassicModeScreen = () => {
   }, [currentPuzzle]);
 
   useEffect(() => {
+    if (!isComplete) {
+      setAnswerState("neutral");
+    }
+  }, [isComplete]);
+
+  useEffect(() => {
     if (!isComplete || gameCompleted) return;
 
     const userAnswer = selectedLetters.join("").toLowerCase();
@@ -108,7 +116,14 @@ const ClassicModeScreen = () => {
       setAnswerState("wrong");
       vibrate([80, 10, 80]);
     }
-  }, [selectedLetters]);
+  }, [isComplete]);
+
+  useEffect(() => {
+    if (!gameCompleted) return;
+    if (points <= bestScore) return;
+
+    updateBestScore(points);
+  }, [gameCompleted, points, bestScore]);
 
   return (
     <main className="w-full flex flex-col items-center gap-3 p-4 pb-12">
@@ -165,7 +180,7 @@ const ClassicModeScreen = () => {
       {gameCompleted && (
         <GameCompleteModal
           score={points}
-          bestScore={420}
+          bestScore={bestScore}
           puzzlesSolved={puzzleCount - puzzleSkipCount}
           puzzleCount={puzzleCount}
           handleReplay={() => window.location.reload()}
