@@ -1,112 +1,96 @@
-# 🧩 Emojinary: Solve Emoji Puzzles!
+# Emojinary 🧩
 
 ## Overview
-Emojinary is a fun and engaging web-based puzzle game where players decipher words from a series of emojis. Built with **React** and **TypeScript** using **Vite**, the application offers a seamless and interactive experience with visually appealing animations and responsive design powered by **Tailwind CSS**.
+
+![Emojinary Playing Interface](/emojinary-screenshot-1.jpg)
+![Emojinary Game End Interface](/emojinary-screenshot-2.jpg)
+
+Emojinary is a high-performance, interactive word puzzle game where players decode emoji sequences to identify technology-related concepts. Built with **React 19**, **TypeScript**, and **Vite**, the application features a polished neumorphic UI, real-time game logic, and a dynamic scoring system tailored for a seamless user experience.
 
 ## Features
--   **Classic Mode**: Tackle a curated set of emoji puzzles, testing your vocabulary and wit against a timer.
--   **Daily Mode**: A fresh challenge every day to keep the fun going.
--   **Interactive UI**: Intuitive drag-and-drop or tap interface for selecting letters and forming answers.
--   **Hints System**: Stuck on a puzzle? Use a hint to nudge you in the right direction (with a small score penalty!).
--   **Dynamic Letter Pool**: Letters are shuffled and presented for each puzzle, ensuring variety.
--   **Scoring System**: Earn points based on correct answers, remaining time, and hint usage.
--   **Sound Controls**: Toggle in-game sounds and haptic feedback for a personalized experience.
--   **Responsive Design**: Enjoy the game across various devices, from desktops to mobile phones.
 
-## Getting Started
-To get Emojinary up and running on your local machine, follow these simple steps.
-
-### Installation
-1.  **Clone the repository**:
-    ```bash
-    git clone git@github.com:Charmingdc/Emojinary
-    ```
-2.  **Navigate into the project directory**:
-    ```bash
-    cd Emojinary
-    ```
-3.  **Install dependencies**:
-    ```bash
-    npm install
-    # or
-    yarn install
-    ```
-4.  **Start the development server**:
-    ```bash
-    npm run dev
-    # or
-    yarn dev
-    ```
-    ✨ The application will be accessible at `http://localhost:5173` (or another port if 5173 is in use).
-
-### Environment Variables
-This project does not require any specific environment variables beyond the standard ones handled by Vite for client-side applications.
-
-## Usage
-Emodinary offers a straightforward and enjoyable gameplay experience. Here's how to play:
-
-1.  **Welcome Screen**: Upon launching the game, you'll be greeted by the welcome screen. Here, you can choose your desired game mode:
-    *   **Classic Mode**: Play through a series of pre-defined puzzles.
-    *   **Daily Mode**: (Coming soon/placeholder as per code) A new puzzle challenge each day.
-    *   **How to Play**: (Placeholder as per code) Detailed instructions on gameplay.
-    *   **Sound Toggle**: Switch game sounds on or off.
-
-2.  **Playing a Puzzle**:
-    *   Each puzzle presents a set of emojis in the "Puzzle Box". Your goal is to combine their meanings to form a single word.
-    *   Below the emojis, you'll see "Answer Slots" – empty spaces representing the letters of the answer.
-    *   The "Letter Pool" provides a collection of letters you can use. Tap on letters to place them into the empty answer slots.
-    *   If you make a mistake, tap on a letter in an answer slot to remove it.
-
-3.  **Game Controls**:
-    *   **Sound Toggle**: Mute or unmute game audio.
-    *   **Hint Button**: Tap the lightbulb icon to reveal a hint for the current puzzle. Using a hint will affect your final score.
-    *   **Skip Button**: If you're stuck, use the skip button to move to the next puzzle. This will count the current puzzle as unsolved.
-
-4.  **Scoring and Timer**:
-    *   A timer is active for each puzzle, adding urgency to your guesses.
-    *   Points are awarded based on the puzzle's difficulty, how quickly you solve it, and whether you used a hint.
-
-5.  **Game Progression**:
-    *   Solve a puzzle correctly, and you'll automatically advance to the next.
-    *   The game tracks your overall score and progress through the puzzle set.
+- 🕹️ **Game Modes**: Supports Classic mode with progressive difficulty and a Daily challenge architecture.
+- ⏱️ **Dynamic Timer**: Per-puzzle countdowns that scale based on difficulty levels (Easy, Medium, Hard).
+- 🔊 **Immersive Audio**: Integrated sound system for feedback on correct/wrong answers and UI interactions.
+- 🎨 **Neumorphic UI**: Custom Tailwind CSS implementation featuring soft shadows and "pressed" states for a tactile feel.
+- 📊 **Persistence**: Local storage integration to save user preferences, such as sound settings and high scores.
+- 📱 **Mobile Responsive**: Fully optimized for touch interactions including haptic feedback (vibration) support.
 
 ## Technologies Used
 
-| Category   | Technology                                                                                                  | Description                                                                  |
-| :--------- | :---------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------- |
-| **Frontend** | [React](https://react.dev/)                                                                                 | A JavaScript library for building user interfaces.                           |
-|            | [TypeScript](https://www.typescriptlang.org/)                                                               | Strongly typed superset of JavaScript that compiles to plain JavaScript.     |
-|            | [Vite](https://vitejs.dev/)                                                                                 | Next-generation frontend tooling for a fast development experience.          |
-|            | [Tailwind CSS](https://tailwindcss.com/)                                                                    | A utility-first CSS framework for rapidly building custom designs.           |
-|            | [React Router DOM](https://reactrouter.com/en/main)                                                         | Declarative routing for React applications.                                  |
-| **State/Data** | [@tanstack/react-query](https://tanstack.com/query/latest)                                                | Powerful asynchronous state management for React.                            |
-| **UI/UX**  | [@phosphor-icons/react](https://phosphoricons.com/)                                                         | Flexible icon family for interfaces.                                         |
-|            | [Lucide React](https://lucide.dev/)                                                                         | Beautifully simple and consistent icon toolkit.                              |
-|            | [Motion](https://www.framer.com/motion/)                                                                    | A production-ready animation library for React.                              |
-| **Linting**| [ESLint](https://eslint.org/)                                                                               | Pluggable JavaScript linter.                                                 |
-| **Build Tools**| [Autoprefixer](https://github.com/postcss/autoprefixer)                                                   | PostCSS plugin to parse CSS and add vendor prefixes to CSS rules.            |
-|            | [PostCSS](https://postcss.org/)                                                                             | A tool for transforming CSS with JavaScript plugins.                         |
+| Category               | Technology                                                                         |
+| :--------------------- | :--------------------------------------------------------------------------------- |
+| **Frontend Framework** | [React 19](https://react.dev/)                                                     |
+| **Language**           | [TypeScript](https://www.typescriptlang.org/)                                      |
+| **Styling**            | [Tailwind CSS](https://tailwindcss.com/)                                           |
+| **State Management**   | [TanStack Query](https://tanstack.com/query/latest)                                |
+| **Animations**         | [Motion](https://motion.dev/)                                                      |
+| **Icons**              | [Lucide React](https://lucide.dev/) & [Phosphor Icons](https://phosphoricons.com/) |
+| **Build Tool**         | [Vite](https://vitejs.dev/)                                                        |
+
+## Getting Started
+
+### Installation
+
+Follow these steps to set up the development environment locally:
+
+1. **Clone the repository**:
+
+   ```bash
+   git clone git@github.com:Charmingdc/Emojinary.git
+   ```
+
+2. **Navigate to the project directory**:
+
+   ```bash
+   cd Emojinary
+   ```
+
+3. **Install dependencies**:
+
+   ```bash
+   npm install
+   ```
+
+4. **Launch the development server**:
+   ```bash
+   npm run dev
+   ```
+
+## Usage
+
+Once the application is running, you can start playing by following these steps:
+
+- **Choose a Mode**: Select "Classic" from the welcome screen to begin the standard puzzle sequence.
+- **Solving Puzzles**: Analyze the emoji clues displayed in the center. Select letters from the "Letter Pool" at the bottom to fill the answer slots.
+- **Game Controls**:
+  - Use the **Lightbulb icon** for a text-based hint (applies a score penalty).
+  - Use the **Skip icon** if you are stuck on a difficult word.
+  - Toggle sound via the **Volume icon**.
+- **Scoring**: Points are calculated based on the puzzle difficulty, the time remaining on the clock, and whether a hint was used.
 
 ## Contributing
-We welcome contributions to Emojinary! If you'd like to improve the game, here's how you can help:
 
-*   💡 **Suggest Features**: Have an idea for a new game mode or a cool new feature? Open an issue to discuss it.
-*   🐛 **Report Bugs**: Encountered a bug? Please open an issue with detailed steps to reproduce it.
-*   🛠️ **Submit Pull Requests**: Feel free to fork the repository, make your changes, and submit a pull request. Please ensure your code adheres to the existing style and conventions.
+Contributions are welcome! If you'd like to improve Emojinary, please follow this workflow:
 
-## License
-This project is not currently covered by an open-source license. All rights reserved.
+- 🍴 Fork the Project.
+- 🌿 Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
+- 💾 Commit your Changes (`git commit -m 'Add some AmazingFeature'`).
+- 🚀 Push to the Branch (`git push origin feature/AmazingFeature`).
+- 📬 Open a Pull Request.
 
 ## Author Info
-- **Charmingdc**
-  - [Twitter](https://x.com/Charmingdc01)
-  - [LinkedIn](https://linkedin.com/in/charmingdc) (Placeholder)
-  - [Portfolio](https://charmingdc.com) (Placeholder)
+
+**Charmingdc**
+
+- GitHub: [Charmingdc](https://github.com/Charmingdc)
+- Twitter: [@Charmingdc01](https://x.com/Charmingdc01)
 
 ---
-[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+
+![React](https://img.shields.io/badge/React-19-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
+![Vite](https://img.shields.io/badge/Vite-7.x-646CFF)
+![TailwindCSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC)
 
 [![Readme was generated by Dokugen](https://img.shields.io/badge/Readme%20was%20generated%20by-Dokugen-brightgreen)](https://www.npmjs.com/package/dokugen)
