@@ -1,5 +1,7 @@
 type Difficulty = "easy" | "medium" | "hard";
 
+type AudioType = "click" | "correct" | "wrong";
+
 interface Puzzle {
   emojis: string[];
   answer: string;
@@ -8,4 +10,4 @@ interface Puzzle {
   difficulty: Difficulty;
 }
 
-export type { Difficulty, Puzzle };
+export type { Difficulty, AudioType, Puzzle };

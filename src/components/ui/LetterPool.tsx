@@ -22,7 +22,10 @@ const LetterPool: React.FC<LetterPoolProps> = ({ letters, onLetterClick }) => {
               onLetterClick(letter);
               play("click");
             }}
-            className="w-12 h-12 rounded-lg bg-[rgb(249,245,233)] border shadow-neumorphic active:shadow-neumorphic-pressed flex justify-center items-center text-lg font-medium transition-shadow duration-150"
+            className="w-12 h-12 rounded-lg bg-[rgb(249,245,233)] border
+            shadow-neumorphic active:shadow-neumorphic-pressed flex
+            justify-center items-center uppercase text-lg font-medium transition-shadow
+            duration-150"
           >
             {letter}
           </button>

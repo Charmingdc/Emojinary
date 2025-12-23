@@ -1,7 +1,6 @@
 import { useRef } from "react";
 import useSound from "@/hooks/useSound";
-
-type AudioType = "click" | "correct" | "wrong";
+import type { AudioType } from "@/types";
 
 const useGameAudio = () => {
   const { isSoundOn } = useSound();

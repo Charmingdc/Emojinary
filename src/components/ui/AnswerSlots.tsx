@@ -50,9 +50,7 @@ const AnswerSlots: React.FC<AnswerSlotsProps> = ({
               className={`
                 w-12 h-12 rounded-lg
                 bg-[rgb(249,245,233)]
-                flex justify-center items-center
-                appearance-none
-                border-[0.0625rem] ${borderClass}
+                flex justify-center items-center uppercase appearance-none border-[0.0625rem] ${borderClass}
                 transition-all duration-200 ease-out
                 ${shadowClass}
               `}

@@ -6,7 +6,14 @@ import path from "path";
 export default defineConfig({
   plugins: [react()],
   server: {
-    allowedHosts: ["technician-strange-message-configure.trycloudflare.com"]
+    allowedHosts: ["technician-strange-message-configure.trycloudflare.com"],
+    proxy: {
+      "/api": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/api/, "/api")
+      }
+    }
   },
   resolve: {
     alias: {
