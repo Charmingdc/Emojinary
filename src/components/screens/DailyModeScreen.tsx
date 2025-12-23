@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 
 import useGeneratedPuzzles from "@/hooks/useGeneratedPuzzles";
 import useGameAudio from "@/hooks/useGameAudio";
-import puzzles from "@/puzzles";
 import DailyModeGame from "@/components/DailyModeGame";
 
 const DailyModeScreen = () => {
