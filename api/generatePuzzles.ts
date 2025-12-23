@@ -50,7 +50,9 @@ Each puzzle MUST be an object with these fields:
 - answer MUST NOT contain spaces, hyphens, or underscores
 - answer length MUST be between 2 and 10 characters
 - hint: string
-- difficulty: "easy", "medium", or "hard"
+- difficulty:  ${
+    difficulty ? difficulty : 'difficulty: "easy", "medium", or "hard"'
+  }
 
 Return a JSON object with a "puzzles" key containing all puzzles as an array.
 Here is an exact example format you must follow (replace example data with real puzzles):

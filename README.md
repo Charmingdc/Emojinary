@@ -5,92 +5,133 @@
 ![Emojinary Playing Interface](/public/emojinary-screenshot-1.jpg)
 ![Emojinary Game End Interface](/public/emojinary-screenshot-2.jpg)
 
-Emojinary is a high-performance, interactive word puzzle game where players decode emoji sequences to identify technology-related concepts. Built with **React 19**, **TypeScript**, and **Vite**, the application features a polished neumorphic UI, real-time game logic, and a dynamic scoring system tailored for a seamless user experience.
+Emojinary is a high-performance, AI-driven word puzzle game where users decode sequences of emojis to find hidden words. Built with a modern TypeScript stack, the project leverages Google’s Gemini AI to dynamically generate contextual puzzles across multiple difficulty levels. It features a responsive, polished UI with custom animations and persistent state management.
 
 ## Features
 
-- 🕹️ **Game Modes**: Supports Classic mode with progressive difficulty and a Daily challenge architecture.
-- ⏱️ **Dynamic Timer**: Per-puzzle countdowns that scale based on difficulty levels (Easy, Medium, Hard).
-- 🔊 **Immersive Audio**: Integrated sound system for feedback on correct/wrong answers and UI interactions.
-- 🎨 **Neumorphic UI**: Custom Tailwind CSS implementation featuring soft shadows and "pressed" states for a tactile feel.
-- 📊 **Persistence**: Local storage integration to save user preferences, such as sound settings and high scores.
-- 📱 **Mobile Responsive**: Fully optimized for touch interactions including haptic feedback (vibration) support.
-
-## Technologies Used
-
-| Category               | Technology                                                                         |
-| :--------------------- | :--------------------------------------------------------------------------------- |
-| **Frontend Framework** | [React 19](https://react.dev/)                                                     |
-| **Language**           | [TypeScript](https://www.typescriptlang.org/)                                      |
-| **Styling**            | [Tailwind CSS](https://tailwindcss.com/)                                           |
-| **State Management**   | [TanStack Query](https://tanstack.com/query/latest)                                |
-| **Animations**         | [Motion](https://motion.dev/)                                                      |
-| **Icons**              | [Lucide React](https://lucide.dev/) & [Phosphor Icons](https://phosphoricons.com/) |
-| **Build Tool**         | [Vite](https://vitejs.dev/)                                                        |
+- **AI-Driven Logic**: Utilizes Gemini 2.5 Flash Lite for real-time puzzle generation and validation.
+- **Dynamic Difficulty**: Three distinct levels (Easy, Medium, Hard) affecting word length and distractors.
+- **Persistent Progress**: LocalStorage integration for sound preferences and best scores.
+- **Interactive UI**: Custom-built neumorphic components and Framer Motion animations for a tactile feel.
+- **Audio Engine**: Integrated sound management with state-aware playback.
 
 ## Getting Started
 
 ### Installation
 
-Follow these steps to set up the development environment locally:
-
-1. **Clone the repository**:
-
+1. **Clone the Repository**:
    ```bash
-   git clone git@github.com:Charmingdc/Emojinary.git
+   git clone git@github.com:Charmingdc/Emojinary
    ```
-
-2. **Navigate to the project directory**:
-
-   ```bash
-   cd Emojinary
-   ```
-
-3. **Install dependencies**:
-
+2. **Install Dependencies**:
    ```bash
    npm install
    ```
-
-4. **Launch the development server**:
+3. **Run Development Server**:
    ```bash
    npm run dev
    ```
 
-## Usage
+### Environment Variables
 
-Once the application is running, you can start playing by following these steps:
+Create a `.env` file in the root directory and include the following:
 
-- **Choose a Mode**: Select "Classic" from the welcome screen to begin the standard puzzle sequence.
-- **Solving Puzzles**: Analyze the emoji clues displayed in the center. Select letters from the "Letter Pool" at the bottom to fill the answer slots.
-- **Game Controls**:
-  - Use the **Lightbulb icon** for a text-based hint (applies a score penalty).
-  - Use the **Skip icon** if you are stuck on a difficult word.
-  - Toggle sound via the **Volume icon**.
-- **Scoring**: Points are calculated based on the puzzle difficulty, the time remaining on the clock, and whether a hint was used.
+```env
+GEMINI_API_KEY=your_google_gemini_api_key_here
+```
+
+# Emojinary API
+
+## Overview
+
+A Node.js serverless backend utilizing Google GenAI and Zod for structured data extraction to serve dynamic puzzle content to the frontend.
+
+## Features
+
+- Google Generative AI: Puzzle generation engine
+- Zod: Runtime schema validation and type safety
+- Vercel Serverless: Edge-ready API deployment
+
+## Getting Started
+
+### Installation
+
+The backend runs as a Vercel Serverless Function. Ensure the Vercel CLI is installed for local testing:
+
+```bash
+npm install -g vercel
+vercel dev
+```
+
+### Environment Variables
+
+- `GEMINI_API_KEY`: Required for puzzle generation via Google Cloud.
+
+## API Documentation
+
+### Base URL
+
+`/api`
+
+### Endpoints
+
+#### GET /generatePuzzles
+
+**Request**:
+Query Parameters:
+
+- `count` (optional): Integer (default: 10) - Number of puzzles to generate.
+- `difficulty` (optional): String ("easy" | "medium" | "hard") - Filter for puzzle complexity.
+
+**Response**:
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "emojis": ["🌈", "🌧️", "☀️"],
+      "letters": ["r", "a", "i", "n", "b", "o", "w", "z", "x", "c"],
+      "answer": "rainbow",
+      "hint": "Colorful arc in the sky.",
+      "difficulty": "easy"
+    }
+  ],
+  "message": "Puzzles generated successfully"
+}
+```
+
+**Errors**:
+
+- 405: Method Not Allowed
+- 500: Failed to generate puzzles (AI service or validation error)
+
+## Technologies Used
+
+| Category       | Technology                                                                                    |
+| :------------- | :-------------------------------------------------------------------------------------------- |
+| **Frontend**   | [React 19](https://react.dev/), [Vite](https://vitejs.dev/)                                   |
+| **Styling**    | [Tailwind CSS](https://tailwindcss.com/), [Framer Motion](https://www.framer.com/motion/)     |
+| **State/Data** | [TanStack Query](https://tanstack.com/query/latest), [React Router](https://reactrouter.com/) |
+| **Backend**    | [Node.js](https://nodejs.org/), [Vercel Functions](https://vercel.com/docs/functions)         |
+| **AI/Logic**   | [Google Gemini AI](https://ai.google.dev/), [Zod](https://zod.dev/)                           |
 
 ## Contributing
 
-Contributions are welcome! If you'd like to improve Emojinary, please follow this workflow:
-
-- 🍴 Fork the Project.
-- 🌿 Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
-- 💾 Commit your Changes (`git commit -m 'Add some AmazingFeature'`).
-- 🚀 Push to the Branch (`git push origin feature/AmazingFeature`).
-- 📬 Open a Pull Request.
+- 🛠️ Fork the repository and create your feature branch.
+- 🧹 Follow the ESLint and Prettier configurations provided.
+- 🧪 Ensure all TypeScript types are correctly defined before submitting a PR.
+- 📝 Provide a clear description of changes in your pull request.
 
 ## Author Info
 
-**Charmingdc**
+- **GitHub**: [Charmingdc](https://github.com/Charmingdc)
+- **Twitter**: [@Charmingdc01](https://x.com/Charmingdc01)
 
-- GitHub: [Charmingdc](https://github.com/Charmingdc)
-- Twitter: [@Charmingdc01](https://x.com/Charmingdc01)
-
----
-
-![React](https://img.shields.io/badge/React-19-blue)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
-![Vite](https://img.shields.io/badge/Vite-7.x-646CFF)
-![TailwindCSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 
 [![Readme was generated by Dokugen](https://img.shields.io/badge/Readme%20was%20generated%20by-Dokugen-brightgreen)](https://www.npmjs.com/package/dokugen)
