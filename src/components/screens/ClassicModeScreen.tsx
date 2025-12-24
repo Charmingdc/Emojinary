@@ -4,6 +4,8 @@ import useGeneratedPuzzles from "@/hooks/useGeneratedPuzzles";
 import useGameAudio from "@/hooks/useGameAudio";
 import useBestScore from "@/hooks/useBestScore";
 
+import LoadingScreen from "@/components/screens/LoadingScreen";
+import ErrorScreen from "@/components/screens/ErrorScreen";
 import ClassicModeGame from "@/components/ClassicModeGame";
 
 const ClassicModeScreen = () => {
@@ -11,15 +13,10 @@ const ClassicModeScreen = () => {
   const { play } = useGameAudio();
   const { bestScore, updateBestScore } = useBestScore();
 
-  const { data: puzzles, isLoading, isError, error } = useGeneratedPuzzles();
+  const { data: puzzles, isLoading, isError, newGame } = useGeneratedPuzzles();
 
-  if (isLoading) return <p>Loading puzzles…</p>;
-  if (isError || !puzzles || puzzles.length === 0)
-    return (
-      <div>
-        Failed to load puzzles, {error?.message && <pre> {error.message} </pre>}
-      </div>
-    );
+  if (isLoading) return <LoadingScreen />;
+  if (isError || !puzzles || puzzles.length === 0) return <ErrorScreen />;
 
   return (
     <ClassicModeGame
@@ -27,6 +24,7 @@ const ClassicModeScreen = () => {
       play={play}
       bestScore={bestScore}
       updateBestScore={updateBestScore}
+      newGame={newGame}
       navigate={navigate}
     />
   );

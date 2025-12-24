@@ -5,10 +5,10 @@ import NavButton from "./NavButton";
 
 interface Props {
   score: number;
-  bestScore: number;
+  bestScore?: number;
   puzzlesSolved: number;
   puzzleCount: number;
-  handleReplay: () => void;
+  handleReplay?: () => void;
   handleGoHome: () => void;
 }
 
@@ -41,10 +41,13 @@ const GameCompleteModal = ({
             <Star size={15} weight="fill" /> Score:
             <span className="text-primary"> {score} </span>
           </li>
-          <li>
-            <Star size={15} weight="fill" className="text-accent" /> Best Score:
-            <span className="text-primary"> {bestScore} </span>
-          </li>
+          {bestScore && (
+            <li>
+              <Star size={15} weight="fill" className="text-accent" /> Best
+              Score:
+              <span className="text-primary"> {bestScore} </span>
+            </li>
+          )}
           <li>
             <PuzzlePiece size={15} weight="fill" /> puzzles:
             <span className="text-primary">
@@ -54,13 +57,15 @@ const GameCompleteModal = ({
         </ul>
 
         <div className="w-full flex flex-wrap items-center justify-center gap-3 mt-8">
-          <NavButton
-            wrapperClassName="w-32"
-            className="py-3 px-5"
-            onClick={handleReplay}
-          >
-            Replay
-          </NavButton>
+          {handleReplay && (
+            <NavButton
+              wrapperClassName="w-32"
+              className="py-3 px-5"
+              onClick={handleReplay}
+            >
+              Replay
+            </NavButton>
+          )}
 
           <NavButton
             wrapperClassName="w-32"

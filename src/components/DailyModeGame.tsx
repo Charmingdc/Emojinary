@@ -11,8 +11,10 @@ import GameCompleteModal from "@/components/ui/GameCompleteModal";
 import { shuffleArray, calculatePoints, vibrate } from "@/utils";
 import usePerPuzzleTimer from "@/hooks/usePerPuzzleTimer";
 import usePuzzleInput from "@/hooks/usePuzzleInput";
+import useHasPlayedToday from "@/hooks/useHasPlayedToday";
 
 import type { AudioType, Puzzle } from "@/types";
+
 type AnswerState = "neutral" | "correct" | "wrong";
 
 type DailyModeGameProps = {
@@ -22,6 +24,7 @@ type DailyModeGameProps = {
 };
 
 const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
+  const { markPlayedToday } = useHasPlayedToday();
   const difficulty = puzzle.difficulty;
 
   const [letterPool, setLetterPool] = useState<string[]>([]);
@@ -39,7 +42,10 @@ const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
     isComplete
   } = usePuzzleInput(puzzle.answer.length);
 
-  const handleTimerExpire = () => setGameCompleted(true);
+  const handleTimerExpire = () => {
+    markPlayedToday();
+    setGameCompleted(true);
+  };
 
   const {
     seconds: remainingTime,
@@ -57,6 +63,7 @@ const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
     setPoints(earned);
     setAnswerState("correct");
     play("correct");
+    markPlayedToday();
 
     setTimeout(() => setGameCompleted(true), 600);
   };
@@ -129,10 +136,8 @@ const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
       {gameCompleted && (
         <GameCompleteModal
           score={points}
-          bestScore={points}
           puzzlesSolved={answerState === "correct" ? 1 : 0}
           puzzleCount={1}
-          handleReplay={() => window.location.reload()}
           handleGoHome={() => navigate("/")}
         />
       )}

@@ -20,6 +20,7 @@ type ClassicModeGameProps = {
   play: (sound: AudioType) => void;
   bestScore: number;
   updateBestScore: (score: number) => void;
+  newGame: () => void;
   navigate: (path: string) => void;
 };
 
@@ -28,6 +29,7 @@ const ClassicModeGame = ({
   play,
   bestScore,
   updateBestScore,
+  newGame,
   navigate
 }: ClassicModeGameProps) => {
   const [currentPuzzleIdx, setCurrentPuzzleIdx] = useState(0);
@@ -189,7 +191,7 @@ const ClassicModeGame = ({
           bestScore={bestScore}
           puzzlesSolved={puzzleCount - puzzleSkipCount}
           puzzleCount={puzzleCount}
-          handleReplay={() => window.location.reload()}
+          handleReplay={newGame}
           handleGoHome={() => navigate("/")}
         />
       )}

@@ -1,6 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { z } from "zod";
-import { zodToJsonSchema } from "zod-to-json-schema";
+// import { zodToJsonSchema } from "zod-to-json-schema";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 const puzzleSchema = z.object({
