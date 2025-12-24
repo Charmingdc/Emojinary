@@ -5,83 +5,67 @@
 ![Emojinary Playing Interface](/public/emojinary-screenshot-1.jpg)
 ![Emojinary Game End Interface](/public/emojinary-screenshot-2.jpg)
 
-Emojinary is a high-performance, AI-driven word puzzle game where users decode sequences of emojis to find hidden words. Built with a modern TypeScript stack, the project leverages Google’s Gemini AI to dynamically generate contextual puzzles across multiple difficulty levels. It features a responsive, polished UI with custom animations and persistent state management.
+Emojinary is a full-stack puzzle application built with TypeScript, React, and Node.js. The system leverages Google's Gemini AI via a Vercel serverless backend to dynamically generate word puzzles from emoji sets, featuring real-time validation, scoring algorithms, and persistent state management.
 
 ## Features
 
-- **AI-Driven Logic**: Utilizes Gemini 2.5 Flash Lite for real-time puzzle generation and validation.
-- **Dynamic Difficulty**: Three distinct levels (Easy, Medium, Hard) affecting word length and distractors.
-- **Persistent Progress**: LocalStorage integration for sound preferences and best scores.
-- **Interactive UI**: Custom-built neumorphic components and Framer Motion animations for a tactile feel.
-- **Audio Engine**: Integrated sound management with state-aware playback.
+- **React & TypeScript**: Type-safe frontend architecture utilizing functional components and custom hooks for game logic.
+- **Gemini AI Integration**: Server-side puzzle generation using the `gemini-2.5-flash-lite` model for context-aware word-to-emoji mapping.
+- **State Management**: Robust local storage integration for high scores, daily completion tracking, and user preferences.
+- **Neumorphic UI**: Custom Tailwind CSS implementation featuring tactile shadows and fluid motion animations.
+- **Serverless Backend**: Node.js API routes deployed as Vercel functions to handle secure AI orchestration and Zod-validated data schemas.
 
 ## Getting Started
 
 ### Installation
 
-1. **Clone the Repository**:
+Follow these steps to set up the development environment locally:
+
+1. **Clone the Repository**
+
    ```bash
    git clone git@github.com:Charmingdc/Emojinary
    ```
-2. **Install Dependencies**:
+
+2. **Install Dependencies**
+
    ```bash
    npm install
    ```
-3. **Run Development Server**:
+
+3. **Configure Environment Variables**
+   Create a `.env` file in the root directory and add your API credentials.
+
+4. **Start Development Server**
    ```bash
    npm run dev
    ```
 
 ### Environment Variables
 
-Create a `.env` file in the root directory and include the following:
+The backend requires the following environment variables to communicate with the Google Generative AI API:
 
-```env
-GEMINI_API_KEY=your_google_gemini_api_key_here
-```
-
-# Emojinary API
-
-## Overview
-
-A Node.js serverless backend utilizing Google GenAI and Zod for structured data extraction to serve dynamic puzzle content to the frontend.
-
-## Features
-
-- Google Generative AI: Puzzle generation engine
-- Zod: Runtime schema validation and type safety
-- Vercel Serverless: Edge-ready API deployment
-
-## Getting Started
-
-### Installation
-
-The backend runs as a Vercel Serverless Function. Ensure the Vercel CLI is installed for local testing:
-
-```bash
-npm install -g vercel
-vercel dev
-```
-
-### Environment Variables
-
-- `GEMINI_API_KEY`: Required for puzzle generation via Google Cloud.
+| Variable         | Description                   | Example                     |
+| :--------------- | :---------------------------- | :-------------------------- |
+| `GEMINI_API_KEY` | Your Google AI Studio API key | `AIzaSyB-EXAMPLE-KEY-12345` |
 
 ## API Documentation
 
 ### Base URL
 
-`/api`
+`https://[your-domain]/api`
 
 ### Endpoints
 
 #### GET /generatePuzzles
 
-**Request**:
-Query Parameters:
+Generates a set of emoji-based word puzzles using AI.
 
-- `count` (optional): Integer (default: 10) - Number of puzzles to generate.
-- `difficulty` (optional): String ("easy" | "medium" | "hard") - Filter for puzzle complexity.
+**Request**:
+
+- **Query Parameters**:
+  - `count` (optional): Number of puzzles to generate. Default: 10.
+  - `difficulty` (optional): "easy" | "medium" | "hard".
 
 **Response**:
 
@@ -103,35 +87,48 @@ Query Parameters:
 
 **Errors**:
 
-- 405: Method Not Allowed
-- 500: Failed to generate puzzles (AI service or validation error)
+- `405`: Method Not Allowed
+- `500`: Failed to generate puzzles (AI service or validation error)
+
+## Usage
+
+Emojinary offers two primary modes of play:
+
+- **Classic Mode**: A continuous stream of puzzles where difficulty scales and players aim for the highest score.
+- **Daily Challenge**: A synchronized daily puzzle available to all users once every 24 hours.
+
+The game uses a points-based system calculated by `(Base Points + Time Bonus) - Hint Penalties`. Users can toggle sound effects and vibration feedback for an immersive experience.
 
 ## Technologies Used
 
-| Category       | Technology                                                                                    |
-| :------------- | :-------------------------------------------------------------------------------------------- |
-| **Frontend**   | [React 19](https://react.dev/), [Vite](https://vitejs.dev/)                                   |
-| **Styling**    | [Tailwind CSS](https://tailwindcss.com/), [Framer Motion](https://www.framer.com/motion/)     |
-| **State/Data** | [TanStack Query](https://tanstack.com/query/latest), [React Router](https://reactrouter.com/) |
-| **Backend**    | [Node.js](https://nodejs.org/), [Vercel Functions](https://vercel.com/docs/functions)         |
-| **AI/Logic**   | [Google Gemini AI](https://ai.google.dev/), [Zod](https://zod.dev/)                           |
+| Category      | Tools                                                                                                |
+| :------------ | :--------------------------------------------------------------------------------------------------- |
+| **Frontend**  | [React](https://react.dev/), [Vite](https://vitejs.dev/), [Tailwind CSS](https://tailwindcss.com/)   |
+| **Backend**   | [Node.js](https://nodejs.org/), [Vercel Functions](https://vercel.com/docs/functions)                |
+| **AI**        | [Google Gemini AI](https://ai.google.dev/)                                                           |
+| **Libraries** | [Zod](https://zod.dev/), [TanStack Query](https://tanstack.com/query), [Motion](https://motion.dev/) |
+| **Icons**     | [Lucide](https://lucide.dev/), [Phosphor Icons](https://phosphoricons.com/)                          |
 
 ## Contributing
 
-- 🛠️ Fork the repository and create your feature branch.
-- 🧹 Follow the ESLint and Prettier configurations provided.
-- 🧪 Ensure all TypeScript types are correctly defined before submitting a PR.
-- 📝 Provide a clear description of changes in your pull request.
+Contributions are welcome to help improve Emojinary!
+
+- 📥 **Pull Requests**: Please create a new branch for any feature or bug fix.
+- 🐛 **Issues**: Report bugs or suggest features via the GitHub issues tab.
+- 🎨 **Styling**: Ensure any UI changes adhere to the existing neumorphic design system.
 
 ## Author Info
 
-- **GitHub**: [Charmingdc](https://github.com/Charmingdc)
-- **Twitter**: [@Charmingdc01](https://x.com/Charmingdc01)
+**Adebayo Muis**
 
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+- Twitter: [@Charmingdc01](https://x.com/Charmingdc01)
+- GitHub: [Charmingdc](https://github.com/Charmingdc)
+
+---
+
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)
 
 [![Readme was generated by Dokugen](https://img.shields.io/badge/Readme%20was%20generated%20by-Dokugen-brightgreen)](https://www.npmjs.com/package/dokugen)
