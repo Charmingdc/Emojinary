@@ -5,67 +5,66 @@
 ![Emojinary Playing Interface](/public/emojinary-screenshot-1.jpg)
 ![Emojinary Game End Interface](/public/emojinary-screenshot-2.jpg)
 
-Emojinary is a full-stack puzzle application built with TypeScript, React, and Node.js. The system leverages Google's Gemini AI via a Vercel serverless backend to dynamically generate word puzzles from emoji sets, featuring real-time validation, scoring algorithms, and persistent state management.
+Emojinary is a high-performance, full-stack puzzle application that leverages Large Language Models (LLMs) to generate dynamic, emoji-based brain teasers. By orchestrating a Vite-powered React frontend with a serverless Node.js backend, the project delivers a seamless, type-safe gaming experience focused on cognitive engagement and interactive design.
 
 ## Features
 
-- **React & TypeScript**: Type-safe frontend architecture utilizing functional components and custom hooks for game logic.
-- **Gemini AI Integration**: Server-side puzzle generation using the `gemini-2.5-flash-lite` model for context-aware word-to-emoji mapping.
-- **State Management**: Robust local storage integration for high scores, daily completion tracking, and user preferences.
-- **Neumorphic UI**: Custom Tailwind CSS implementation featuring tactile shadows and fluid motion animations.
-- **Serverless Backend**: Node.js API routes deployed as Vercel functions to handle secure AI orchestration and Zod-validated data schemas.
+- AI Puzzle Generation: Utilizing the Groq Llama-3.1-8B model to synthesize unique word-based emoji clues on demand.
+- Daily & Classic Game Modes: Architected systems for persistent daily challenges and endless procedurally generated sessions.
+- Neumorphic UI Design: A sophisticated, tactile interface built with Tailwind CSS, featuring custom animations and responsive layouts.
+- Advanced Scoring Engine: Real-time point calculation logic based on difficulty multipliers, time remaining, and hint penalties.
+- State Persistence: Robust local storage integration for tracking high scores and daily participation status.
 
 ## Getting Started
 
 ### Installation
 
-Follow these steps to set up the development environment locally:
-
-1. **Clone the Repository**
-
-   ```bash
-   git clone git@github.com:Charmingdc/Emojinary
-   ```
-
-2. **Install Dependencies**
-
-   ```bash
-   npm install
-   ```
-
-3. **Configure Environment Variables**
-   Create a `.env` file in the root directory and add your API credentials.
-
-4. **Start Development Server**
-   ```bash
-   npm run dev
-   ```
+- **Clone the Repository**:
+  ```bash
+  git clone git@github.com:Charmingdc/Emojinary
+  ```
+- **Install Dependencies**:
+  ```bash
+  npm install
+  ```
+- **Start Development Server**:
+  ```bash
+  npm run dev
+  ```
 
 ### Environment Variables
 
-The backend requires the following environment variables to communicate with the Google Generative AI API:
+To enable AI puzzle generation, you must provide a Groq API key in your environment configuration:
 
-| Variable         | Description                   | Example                     |
-| :--------------- | :---------------------------- | :-------------------------- |
-| `GEMINI_API_KEY` | Your Google AI Studio API key | `AIzaSyB-EXAMPLE-KEY-12345` |
+- `GROQ_API_KEY`: Your API key from the Groq Cloud Console. (Example: `gsk_7jR...`)
+
+# Emojinary API
+
+## Overview
+
+Serverless API architecture built with TypeScript and Vercel Functions. The backend utilizes LangChain and Zod for structured AI output, ensuring all generated puzzles adhere to strict data schemas before reaching the client.
+
+## Features
+
+- LangChain/Groq: Handles LLM inference and prompt orchestration.
+- Zod: Validates AI-generated JSON payloads for runtime safety.
+- Vercel Serverless: Scalable, event-driven endpoint execution.
 
 ## API Documentation
 
 ### Base URL
 
-`https://[your-domain]/api`
+`/api`
 
 ### Endpoints
 
 #### GET /generatePuzzles
 
-Generates a set of emoji-based word puzzles using AI.
-
 **Request**:
+The endpoint accepts query parameters to customize the puzzle generation batch.
 
-- **Query Parameters**:
-  - `count` (optional): Number of puzzles to generate. Default: 10.
-  - `difficulty` (optional): "easy" | "medium" | "hard".
+- `count`: (Optional) Integer. Specifies the number of puzzles to return (Default: 10).
+- `difficulty`: (Optional) String. Filters generation complexity. Options: `easy`, `medium`, `hard`.
 
 **Response**:
 
@@ -74,61 +73,69 @@ Generates a set of emoji-based word puzzles using AI.
   "success": true,
   "data": [
     {
-      "emojis": ["🌈", "🌧️", "☀️"],
-      "letters": ["r", "a", "i", "n", "b", "o", "w", "z", "x", "c"],
-      "answer": "rainbow",
-      "hint": "Colorful arc in the sky.",
+      "emojis": ["🍎", "🥧"],
+      "letters": ["a", "p", "p", "l", "e", "p", "i", "e", "s", "w"],
+      "answer": "applepie",
+      "hint": "A classic American dessert",
       "difficulty": "easy"
     }
-  ],
-  "message": "Puzzles generated successfully"
+  ]
 }
 ```
 
 **Errors**:
 
-- `405`: Method Not Allowed
-- `500`: Failed to generate puzzles (AI service or validation error)
+- 405: Method Not Allowed (Only GET requests are accepted)
+- 500: Failed to generate puzzles (Occurs during AI service timeouts or schema validation failures)
 
 ## Usage
 
-Emojinary offers two primary modes of play:
+### Game Modes
 
-- **Classic Mode**: A continuous stream of puzzles where difficulty scales and players aim for the highest score.
-- **Daily Challenge**: A synchronized daily puzzle available to all users once every 24 hours.
+- **Classic Mode**: Solve a series of 10 AI-generated puzzles. Manage your time effectively to maximize your score and set a new personal record.
+- **Daily Mode**: Compete in a single, high-difficulty puzzle shared by all users for the day. Once completed, the countdown timer tracks the availability of the next challenge.
 
-The game uses a points-based system calculated by `(Base Points + Time Bonus) - Hint Penalties`. Users can toggle sound effects and vibration feedback for an immersive experience.
+### Gameplay Mechanics
+
+- **Building Words**: Tap letters from the pool to fill answer slots. You can remove a letter by tapping the slot again.
+- **Utilizing Hints**: If stuck, the hint button reveals a clue about the phrase. Use this sparingly, as it applies a point penalty to your final score.
+- **Timer System**: Each difficulty level provides a specific window of time. Solving puzzles quickly grants a significant time bonus.
 
 ## Technologies Used
 
-| Category      | Tools                                                                                                |
-| :------------ | :--------------------------------------------------------------------------------------------------- |
-| **Frontend**  | [React](https://react.dev/), [Vite](https://vitejs.dev/), [Tailwind CSS](https://tailwindcss.com/)   |
-| **Backend**   | [Node.js](https://nodejs.org/), [Vercel Functions](https://vercel.com/docs/functions)                |
-| **AI**        | [Google Gemini AI](https://ai.google.dev/)                                                           |
-| **Libraries** | [Zod](https://zod.dev/), [TanStack Query](https://tanstack.com/query), [Motion](https://motion.dev/) |
-| **Icons**     | [Lucide](https://lucide.dev/), [Phosphor Icons](https://phosphoricons.com/)                          |
+| Technology                                          | Purpose                                      |
+| :-------------------------------------------------- | :------------------------------------------- |
+| [React 19](https://react.dev/)                      | Component-based UI architecture              |
+| [TypeScript](https://www.typescriptlang.org/)       | End-to-end type safety                       |
+| [Groq Cloud](https://groq.com/)                     | Llama 3.1 LLM inference                      |
+| [TanStack Query](https://tanstack.com/query/latest) | Asynchronous state management and caching    |
+| [Tailwind CSS](https://tailwindcss.com/)            | Utility-first styling and neumorphic design  |
+| [Framer Motion](https://www.framer.com/motion/)     | Smooth UI transitions and micro-interactions |
+| [Vite](https://vitejs.dev/)                         | Modern frontend tooling and bundling         |
 
 ## Contributing
 
-Contributions are welcome to help improve Emojinary!
+We welcome contributions that improve the gameplay experience or optimize the AI prompt engineering.
 
-- 📥 **Pull Requests**: Please create a new branch for any feature or bug fix.
-- 🐛 **Issues**: Report bugs or suggest features via the GitHub issues tab.
-- 🎨 **Styling**: Ensure any UI changes adhere to the existing neumorphic design system.
+- 🍴 Fork the repository.
+- 🌿 Create a feature branch: `git checkout -b feature/AmazingFeature`.
+- 💾 Commit your changes: `git commit -m 'Add some AmazingFeature'`.
+- 🚀 Push to the branch: `git push origin feature/AmazingFeature`.
+- 📝 Open a Pull Request for review.
 
 ## Author Info
 
 **Adebayo Muis**
 
-- Twitter: [@Charmingdc01](https://x.com/Charmingdc01)
 - GitHub: [Charmingdc](https://github.com/Charmingdc)
+- Twitter: [@Charmingdc01](https://x.com/Charmingdc01)
 
 ---
 
-![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
-![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
-![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![AI](https://img.shields.io/badge/AI-Groq%20Llama%203.1-orange?style=for-the-badge)
 
 [![Readme was generated by Dokugen](https://img.shields.io/badge/Readme%20was%20generated%20by-Dokugen-brightgreen)](https://www.npmjs.com/package/dokugen)

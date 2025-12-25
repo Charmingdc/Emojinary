@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { ChatGroq } from "@langchain/groq";
 import { z } from "zod";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
@@ -13,92 +13,6 @@ const puzzleSchema = z.object({
 const puzzlesSchema = z.object({
   puzzles: z.array(puzzleSchema).min(1)
 });
-
-const MODELS = [
-  "gemini-2.5-flash",
-  "gemini-2.5-flash-lite",
-  "gemini-2.0-flash-lite",
-  "gemini-2.0-flash",
-  "gemini-1.5-flash"
-] as const;
-
-type GeminiModel = (typeof MODELS)[number];
-
-const COOLDOWN_MS = 60_000;
-
-const modelCooldowns: Record<GeminiModel, number> = {
-  "gemini-2.5-flash": 0,
-  "gemini-2.5-flash-lite": 0,
-  "gemini-2.0-flash-lite": 0,
-  "gemini-2.0-flash": 0,
-  "gemini-1.5-flash": 0
-};
-
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY!
-});
-
-// Utils
-function isRateLimitError(error: unknown): boolean {
-  if (!(error instanceof Error)) return false;
-
-  return (
-    error.message.includes("429") ||
-    error.message.toLowerCase().includes("quota") ||
-    error.message.toLowerCase().includes("rate")
-  );
-}
-
-function isInCooldown(model: GeminiModel): boolean {
-  return Date.now() < modelCooldowns[model];
-}
-
-function setCooldown(model: GeminiModel) {
-  modelCooldowns[model] = Date.now() + COOLDOWN_MS;
-}
-
-async function generateWithFallback(prompt: string): Promise<{
-  puzzles: z.infer<typeof puzzleSchema>[];
-  modelUsed: GeminiModel;
-}> {
-  let lastError: unknown;
-
-  for (const model of MODELS) {
-    if (isInCooldown(model)) {
-      console.warn(`[AI] Skipping ${model} (cooldown active)`);
-      continue;
-    }
-
-    try {
-      const response = await ai.models.generateContent({
-        model,
-        contents: prompt,
-        config: {
-          responseMimeType: "application/json"
-        }
-      });
-
-      const json = JSON.parse(response.text);
-      const parsed = puzzlesSchema.parse(json);
-
-      return {
-        puzzles: parsed.puzzles,
-        modelUsed: model
-      };
-    } catch (error) {
-      lastError = error;
-
-      console.warn(`[AI] ${model} failed`);
-
-      if (isRateLimitError(error)) {
-        console.warn(`[AI] ${model} rate-limited → cooldown`);
-        setCooldown(model);
-      }
-    }
-  }
-
-  throw lastError ?? new Error("All models failed");
-}
 
 const generatePuzzles = async (req: VercelRequest, res: VercelResponse) => {
   if (req.method !== "GET") {
@@ -116,37 +30,33 @@ const generatePuzzles = async (req: VercelRequest, res: VercelResponse) => {
 
   const prompt = `
 Generate ${count} emoji word puzzles in JSON format ONLY.
+Use slightly different puzzles each time — consider this seed: ${Date.now()}
 
 Rules:
 - emojis: 3+ emojis
-- letters: answer letters + up to 3 distractors
+- letters: answer letters + up to 3 distractors (shuffle them randomly)
 - answer: lowercase, single English word, 2–10 chars, no spaces
-- hint: string
+- hint: string, a vague sentence about the puzzle
 - difficulty: ${difficulty ?? `"easy", "medium", or "hard"`}
 
-Return ONLY:
-
-{
-  "puzzles": [
-    {
-      "emojis": ["🌈","🌧️","☀️"],
-      "letters": ["r","a","i","n","b","o","w"],
-      "answer": "rainbow",
-      "hint": "Colorful arc in the sky.",
-      "difficulty": "easy"
-    }
-  ]
-}
+Return only a JSON object like:
+{ "puzzles": [ ... ] }
 `;
 
   try {
-    const { puzzles, modelUsed } = await generateWithFallback(prompt);
+    const model = new ChatGroq({
+      model: "llama-3.1-8b-instant",
+      apikey: process.env.GROQ_API_KEY,
+      temperature: 0.4,
+      maxRetries: 3
+    });
 
-    console.log("model used:", modelUsed);
+    const modelWithStructure = model.withStructuredOutput(puzzlesSchema);
+    const response = await modelWithStructure.invoke(prompt);
+
     return res.status(200).json({
       success: true,
-      data: puzzles,
-      model: modelUsed
+      data: response.puzzles
     });
   } catch (error) {
     console.error("[AI] Generation failed", error);
