@@ -1,5 +1,9 @@
 import { ChatGroq } from "@langchain/groq";
 import { z } from "zod";
+
+import { pickFlavors, buildPrompt, shuffleArray } from "./utils/index.ts";
+
+import flavors from "./constants/flavors.ts";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 const puzzleSchema = z.object({
@@ -21,42 +25,40 @@ const generatePuzzles = async (req: VercelRequest, res: VercelResponse) => {
       .json({ success: false, message: "Method Not Allowed" });
   }
 
-  const count = Number(req.query.count ?? 10);
+  const count = Number(req.query.count ?? 7);
   const difficulty = req.query.difficulty as
     | "easy"
     | "medium"
     | "hard"
     | undefined;
 
-  const prompt = `
-Generate ${count} emoji word puzzles in JSON format ONLY.
-Use slightly different puzzles each time — consider this seed: ${Date.now()}
+  const { primary, secondary } = pickFlavors(flavors);
+  const prompt = buildPrompt({
+    count,
+    primaryFlavor: primary,
+    secondaryFlavor: secondary,
+    difficulty
+  });
 
-Rules:
-- emojis: 3+ emojis
-- letters: answer letters + up to 4 distractors (shuffle them randomly) with minimum of 3 distractors
-- answer: lowercase, single English word, 2–10 chars, no spaces
-- hint: string, a vague sentence about the puzzle
-- difficulty: ${difficulty ?? `"easy", "medium", or "hard"`}
-
-Return only a JSON object like:
-{ "puzzles": [ ... ] }
-`;
+  console.log("prompt:", prompt);
 
   try {
     const model = new ChatGroq({
       model: "openai/gpt-oss-120b",
       apikey: process.env.GROQ_API_KEY,
-      temperature: 0.4,
+      temperature: 0.5,
       maxRetries: 3
     });
 
-    const modelWithStructure = model.withStructuredOutput(puzzlesSchema);
-    const response = await modelWithStructure.invoke(prompt);
+    const response = await model
+      .withStructuredOutput(puzzlesSchema)
+      .invoke(prompt);
+
+    const puzzles = shuffleArray(response.puzzles);
 
     return res.status(200).json({
       success: true,
-      data: response.puzzles
+      data: puzzles
     });
   } catch (error) {
     console.error("[AI] Generation failed", error);

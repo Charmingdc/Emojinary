@@ -2,11 +2,6 @@ import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { Github, Twitter } from "lucide-react";
 
-const socials = [
-  { icon: Github, url: "https://github.com/Charmingdc/Emojinary" },
-  { icon: Twitter, url: "https://x.com/Charmingdc01" }
-];
-
 const Topbar = () => {
   const navigate = useNavigate();
   return (
@@ -23,16 +18,24 @@ const Topbar = () => {
         </motion.div>
       </li>
 
-      <li className="flex items-center justify-center gap-4 -mt-1">
-        {socials.map(social => {
-          const Icon = social.icon;
+      <li className="flex items-center justify-center gap-3 text-xs font-extralight -mt-1">
+        <a
+          key="github"
+          href="https://github.com/Charmingdc/Emojinary"
+          target="_blank"
+          className="flex items-center gap-2 p-2 border rounded-full text-xs"
+        >
+          <Github size={14} /> Star on Github
+        </a>
 
-          return (
-            <a key={social.url} href={social.url} target="_blank">
-              <Icon />
-            </a>
-          );
-        })}
+        <a
+          key="twitter"
+          href="https://x.com/Charmingdc01"
+          target="_blank"
+          className="text-xs"
+        >
+          <Twitter size={19} />
+        </a>
       </li>
     </ul>
   );
