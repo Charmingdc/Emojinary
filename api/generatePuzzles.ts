@@ -34,7 +34,7 @@ Use slightly different puzzles each time — consider this seed: ${Date.now()}
 
 Rules:
 - emojis: 3+ emojis
-- letters: answer letters + up to 3 distractors (shuffle them randomly)
+- letters: answer letters + up to 4 distractors (shuffle them randomly) with minimum of 3 distractors
 - answer: lowercase, single English word, 2–10 chars, no spaces
 - hint: string, a vague sentence about the puzzle
 - difficulty: ${difficulty ?? `"easy", "medium", or "hard"`}
@@ -45,7 +45,7 @@ Return only a JSON object like:
 
   try {
     const model = new ChatGroq({
-      model: "llama-3.1-8b-instant",
+      model: "openai/gpt-oss-120b",
       apikey: process.env.GROQ_API_KEY,
       temperature: 0.4,
       maxRetries: 3
