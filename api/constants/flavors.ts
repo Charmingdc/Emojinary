@@ -1,57 +1,57 @@
 const flavors: string[] = [
-  // Concepts & thinking
-  "abstract concepts",
-  "emotions and feelings",
-  "states of mind",
-  "cause and effect",
+  // Everyday ideas & feelings
+  "feelings and emotions",
+  "thoughts and ideas",
+  "funny things",
+  "common sayings",
 
-  // Physical world
-  "real-world objects",
-  "tools and equipment",
-  "materials and substances",
+  // Things around us
+  "household items",
+  "tools and gadgets",
+  "food and drinks",
+  "clothes and accessories",
   "shapes and patterns",
 
   // People & actions
-  "actions and verbs",
-  "professions and roles",
+  "things people do",
+  "jobs and professions",
   "daily routines",
-  "social interactions",
+  "friends and family",
 
-  // Nature & space
-  "nature and geography",
-  "weather and climate",
-  "animals and wildlife",
-  "plants and vegetation",
-  "space and astronomy",
+  // Nature & animals
+  "animals",
+  "plants and trees",
+  "weather",
+  "places outdoors",
+  "space and planets",
 
-  // Culture & society
-  "food and culture",
-  "traditions and rituals",
-  "sports and games",
-  "music and sound",
-  "art and creativity",
+  // Fun & culture
+  "movies and TV shows",
+  "music and instruments",
+  "sports",
+  "toys and games",
+  "art and crafts",
 
-  // Technology & modern life
-  "modern technology",
-  "internet and digital life",
-  "machines and mechanics",
-  "science and discovery",
+  // Technology & stuff we use
+  "phones and computers",
+  "cars and machines",
+  "science and experiments",
 
-  // Places & movement
-  "places and locations",
-  "transport and travel",
-  "urban life",
-  "buildings and structures",
+  // Places & travel
+  "cities and towns",
+  "countries and landmarks",
+  "transportation",
+  "buildings",
 
   // Time & change
-  "time and schedules",
-  "growth and transformation",
-  "speed and motion",
+  "time and clocks",
+  "growing up",
+  "fast and slow",
 
-  // Sensory
-  "colors and light",
-  "textures and materials",
-  "temperature and energy"
+  // Senses & appearance
+  "colors",
+  "textures",
+  "hot and cold"
 ];
 
 export default flavors;
