@@ -1,5 +1,5 @@
-import pickFlavors from "./pickFlavors.ts";
-import buildPrompt from "./buildPrompt.ts";
-import shuffleArray from "./shuffleArray.ts";
+import pickFlavors from "./pickFlavors";
+import buildPrompt from "./buildPrompt";
+import shuffleArray from "./shuffleArray";
 
 export { pickFlavors, buildPrompt, shuffleArray };
