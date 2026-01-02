@@ -2,7 +2,6 @@ import { ChatGroq } from "@langchain/groq";
 import { z } from "zod";
 
 import { pickFlavors, buildPrompt, shuffleArray } from "./utils/index.ts";
-
 import flavors from "./constants/flavors.ts";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
@@ -17,6 +16,38 @@ const puzzleSchema = z.object({
 const puzzlesSchema = z.object({
   puzzles: z.array(puzzleSchema).min(1)
 });
+
+const model = new ChatGroq({
+  model: "openai/gpt-oss-120b",
+  apiKey: process.env.GROQ_API_KEY,
+  temperature: 0.2,
+  maxRetries: 0
+});
+
+const extractJson = (text: string) => {
+  const match = text.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error("No JSON object found in response");
+  return JSON.parse(match[0]);
+};
+
+const generateWithRetry = async (
+  prompt: string,
+  retries = 2
+): Promise<z.infer<typeof puzzlesSchema>> => {
+  let lastError: unknown;
+
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const response = await model.invoke(prompt);
+      const json = extractJson(response.content as string);
+      return puzzlesSchema.parse(json);
+    } catch (err) {
+      lastError = err;
+    }
+  }
+
+  throw lastError;
+};
 
 const generatePuzzles = async (req: VercelRequest, res: VercelResponse) => {
   if (req.method !== "GET") {
@@ -33,6 +64,7 @@ const generatePuzzles = async (req: VercelRequest, res: VercelResponse) => {
     | undefined;
 
   const { primary, secondary } = pickFlavors(flavors);
+
   const prompt = buildPrompt({
     count,
     primaryFlavor: primary,
@@ -40,28 +72,16 @@ const generatePuzzles = async (req: VercelRequest, res: VercelResponse) => {
     difficulty
   });
 
-  console.log("prompt:", prompt);
-
   try {
-    const model = new ChatGroq({
-      model: "openai/gpt-oss-120b",
-      apikey: process.env.GROQ_API_KEY,
-      temperature: 0.5,
-      maxRetries: 3
-    });
-
-    const response = await model
-      .withStructuredOutput(puzzlesSchema)
-      .invoke(prompt);
-
-    const puzzles = shuffleArray(response.puzzles);
+    const result = await generateWithRetry(prompt);
+    const puzzles = shuffleArray(result.puzzles);
 
     return res.status(200).json({
       success: true,
       data: puzzles
     });
   } catch (error) {
-    console.error("[AI] Generation failed", error);
+    console.error("[AI] Generation failed:", error);
 
     return res.status(500).json({
       success: false,

@@ -59,20 +59,19 @@ VARIATION ENFORCEMENT:
 If a puzzle feels obvious, generic, or similar to common emoji games,
 discard it internally and generate a better one.
 
-OUTPUT FORMAT:
+EXAMPLE OUTPUT FORMAT:
 Return ONLY valid JSON:
 {
   "puzzles": [
-    {
-      "emojis": [],
-      "letters": [],
-      "answer": "",
-      "hint": "",
-      "difficulty": ""
-    }
+  {
+    "emojis": ["⛴️", "🌊", "🏙️"],
+    "letters": ["b", "h", "r", "e", "a", "t", "o", "n", "s", "r"],
+    "answer": "harbor",
+    "hint": "A safe haven for vessels.",
+    "difficulty": "easy"
+  }
   ]
-}
-`;
+}`;
 };
 
 export default buildPrompt;

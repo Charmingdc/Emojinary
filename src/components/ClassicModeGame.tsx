@@ -72,8 +72,8 @@ const ClassicModeGame = ({
     }
 
     setCurrentPuzzleIdx(prev => (prev < puzzleCount - 1 ? prev + 1 : prev));
-
     resetSlots();
+    setLetterPool(shuffleArray(currentPuzzle.letters));
     setShowHint(false);
     setUsedHint(false);
     setAnswerState("neutral");
@@ -85,20 +85,39 @@ const ClassicModeGame = ({
       remainingTime,
       usedHint
     );
-
     setPoints(prev => prev + earned);
     setAnswerState("correct");
     play("correct");
 
-    const isLastPuzzle = currentPuzzleIdx === puzzleCount - 1;
-
-    if (isLastPuzzle) {
+    if (currentPuzzleIdx === puzzleCount - 1) {
       setGameCompleted(true);
       return;
     }
 
     setTimeout(goToNextPuzzle, 500);
   };
+
+  // --- Letter Pool Handlers ---
+
+  const handleLetterPick = (letter: string, index: number) => {
+    const inserted = handleLetterClick(letter);
+    if (!inserted) return;
+
+    setLetterPool(prev => {
+      const next = [...prev];
+      next.splice(index, 1); // remove clicked letter by index
+      return next;
+    });
+  };
+
+  const handleLetterRemove = (slotIdx: number) => {
+    const removed = handleSlotClick(slotIdx);
+    if (!removed) return;
+
+    setLetterPool(prev => shuffleArray([...prev, removed])); // add back removed letter
+  };
+
+  // --- Effects ---
 
   useEffect(() => {
     resetSlots();
@@ -107,18 +126,14 @@ const ClassicModeGame = ({
   }, [currentPuzzle]);
 
   useEffect(() => {
-    if (!isComplete) {
-      setAnswerState("neutral");
-    }
+    if (!isComplete) setAnswerState("neutral");
   }, [isComplete]);
 
   useEffect(() => {
     if (!isComplete || gameCompleted) return;
 
     const userAnswer = selectedLetters.join("").toLowerCase();
-    const correctAnswer = currentPuzzle.answer.toLowerCase();
-
-    if (userAnswer === correctAnswer) {
+    if (userAnswer === currentPuzzle.answer.toLowerCase()) {
       handleCorrectAnswer();
     } else {
       setAnswerState("wrong");
@@ -127,9 +142,7 @@ const ClassicModeGame = ({
   }, [isComplete]);
 
   useEffect(() => {
-    if (!gameCompleted) return;
-    if (points <= bestScore) return;
-
+    if (!gameCompleted || points <= bestScore) return;
     updateBestScore(points);
   }, [gameCompleted, points, bestScore]);
 
@@ -164,7 +177,6 @@ const ClassicModeGame = ({
               resetTimer: reset
             }}
           />
-
           <PuzzleBox puzzle={currentPuzzle} />
         </div>
 
@@ -177,11 +189,11 @@ const ClassicModeGame = ({
 
       <AnswerSlots
         slots={selectedLetters}
-        onSlotClick={handleSlotClick}
+        onSlotClick={handleLetterRemove}
         answerState={answerState}
       />
 
-      <LetterPool letters={letterPool} onLetterClick={handleLetterClick} />
+      <LetterPool letters={letterPool} onLetterClick={handleLetterPick} />
 
       {answerState === "correct" && <CorrectAnswerBanner />}
 
