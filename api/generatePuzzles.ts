@@ -20,7 +20,7 @@ const puzzlesSchema = z.object({
 const model = new ChatGroq({
   model: "openai/gpt-oss-120b",
   apiKey: process.env.GROQ_API_KEY,
-  temperature: 0.2,
+  temperature: 0.4,
   maxRetries: 0
 });
 
@@ -32,7 +32,7 @@ const extractJson = (text: string) => {
 
 const generateWithRetry = async (
   prompt: string,
-  retries = 2
+  retries = 1
 ): Promise<z.infer<typeof puzzlesSchema>> => {
   let lastError: unknown;
 
