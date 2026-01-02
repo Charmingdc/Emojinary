@@ -20,7 +20,7 @@ const puzzlesSchema = z.object({
 const model = new ChatGroq({
   model: "openai/gpt-oss-120b",
   apiKey: process.env.GROQ_API_KEY,
-  temperature: 0.4,
+  temperature: 0.2,
   maxRetries: 0
 });
 
@@ -56,7 +56,7 @@ const generatePuzzles = async (req: VercelRequest, res: VercelResponse) => {
       .json({ success: false, message: "Method Not Allowed" });
   }
 
-  const count = Number(req.query.count ?? 7);
+  const count = Number(req.query.count ?? 8);
   const difficulty = req.query.difficulty as
     | "easy"
     | "medium"
