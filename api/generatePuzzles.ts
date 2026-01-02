@@ -1,8 +1,8 @@
 import { ChatGroq } from "@langchain/groq";
 import { z } from "zod";
 
-import { pickFlavors, buildPrompt, shuffleArray } from "./utils/index";
-import flavors from "./constants/flavors";
+import { pickFlavors, buildPrompt, shuffleArray } from "./utils/index.js";
+import flavors from "./constants/flavors.js";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 const puzzleSchema = z.object({
