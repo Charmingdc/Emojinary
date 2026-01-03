@@ -10,6 +10,25 @@ interface Props {
   handleGoHome: () => void;
 }
 
+/* ---------- helpers ---------- */
+
+const getResultMessage = (solved: number, total: number) => {
+  if (solved === total) return "Wonderful!";
+  if (solved === total - 1) return "Excellent!";
+  if (solved >= Math.ceil(total * 0.6)) return "Great Work!";
+  if (solved >= Math.ceil(total * 0.4)) return "Good Job!";
+  if (solved > 0) return "Nice Try!";
+  return "Try Again!";
+};
+
+const getTrophyColor = (solved: number, total: number) => {
+  if (solved === total) return "text-yellow-400";
+  if (solved >= total / 2) return "text-accent";
+  return "text-gray-400";
+};
+
+/* ---------- component ---------- */
+
 const GameCompleteModal = ({
   score,
   bestScore,
@@ -22,44 +41,68 @@ const GameCompleteModal = ({
   const solvedCount = puzzleArray.filter(
     p => p.puzzleState === "solved"
   ).length;
+
   const skippedCount = puzzleArray.filter(
     p => p.puzzleState === "skipped"
   ).length;
 
-  const isSinglePuzzle = puzzleArray.length === 1;
+  const unsolvedCount = puzzleArray.filter(
+    p => p.puzzleState === "unsolved"
+  ).length;
+
+  const totalPuzzles = puzzleArray.length;
+  const isSinglePuzzle = totalPuzzles === 1;
+
+  const resultMessage = getResultMessage(solvedCount, totalPuzzles);
+  const trophyColor = getTrophyColor(solvedCount, totalPuzzles);
 
   return (
     <section className="fixed top-0 left-0 w-screen h-screen bg-black/60 backdrop-blur-xl z-50 flex flex-col items-center justify-start p-6 overflow-hidden">
-      <div className="flex flex-col items-center gap-3 mt-4">
-        <Trophy size={96} className="text-accent animate-bounce" />
-        <h1 className="text-3xl font-bold text-white">Well Done!</h1>
+      {/* Header */}
+      <div className="flex flex-col items-center gap-2 mt-4">
+        <Trophy size={96} className={`${trophyColor} animate-bounce`} />
+        <h1 className="text-3xl font-bold text-white">{resultMessage}</h1>
+        <p className="text-sm text-gray-300">
+          You solved {solvedCount} out of {totalPuzzles} puzzles
+        </p>
       </div>
 
-      <div className="flex justify-around w-full max-w-5xl text-lg font-medium px-6 py-4 border-b border-gray-400 mt-4 text-white">
+      {/* Stats */}
+      <div className="flex justify-around w-full max-w-5xl text-lg font-medium px-6 py-4 mt-4 text-white">
         <div className="text-center">
           Score
           <br />
           <span className="text-primary text-2xl">{score}</span>
         </div>
-        {bestScore && (
+
+        {bestScore !== undefined && (
           <div className="text-center">
             Best
             <br />
             <span className="text-primary text-2xl">{bestScore}</span>
           </div>
         )}
+
         <div className="text-center text-green-400">
           Solved
           <br />
           <span className="text-2xl">{solvedCount}</span>
         </div>
+
         <div className="text-center text-red-400">
           Skipped
           <br />
           <span className="text-2xl">{skippedCount}</span>
         </div>
+
+        <div className="text-center text-gray-400">
+          Unsolved
+          <br />
+          <span className="text-2xl">{unsolvedCount}</span>
+        </div>
       </div>
 
+      {/* Puzzle list */}
       <div
         className={`w-full max-w-5xl mt-2 ${
           isSinglePuzzle
@@ -106,6 +149,7 @@ const GameCompleteModal = ({
         ))}
       </div>
 
+      {/* Actions */}
       <div
         className={`flex flex-wrap justify-center gap-4 mb-4 ${
           isSinglePuzzle ? "mt-16" : "mt-4"
