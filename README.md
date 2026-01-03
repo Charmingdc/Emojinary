@@ -5,50 +5,44 @@
 ![Emojinary Playing Interface](/public/emojinary-screenshot-1.jpg)
 ![Emojinary Game End Interface](/public/emojinary-screenshot-2.jpg)
 
-Emojinary is a high-performance, full-stack puzzle application that leverages Large Language Models (LLMs) to generate dynamic, emoji-based brain teasers. By orchestrating a Vite-powered React frontend with a serverless Node.js backend, the project delivers a seamless, type-safe gaming experience focused on cognitive engagement and interactive design.
+Emojinary is a high-performance, full-stack puzzle application that challenges users to decode phrases and concepts from AI-generated emoji sequences. Built with a focus on polished UI/UX, the project utilizes Large Language Models (LLMs) to ensure infinite replayability through dynamic content generation rather than static databases.
 
 ## Features
 
-- AI Puzzle Generation: Utilizing the Groq Llama-3.1-8B model to synthesize unique word-based emoji clues on demand.
-- Daily & Classic Game Modes: Architected systems for persistent daily challenges and endless procedurally generated sessions.
-- Neumorphic UI Design: A sophisticated, tactile interface built with Tailwind CSS, featuring custom animations and responsive layouts.
-- Advanced Scoring Engine: Real-time point calculation logic based on difficulty multipliers, time remaining, and hint penalties.
-- State Persistence: Robust local storage integration for tracking high scores and daily participation status.
+- **AI-Driven Puzzle Generation**: Utilizes LangChain and the Groq LPU Inference Engine to generate unique, contextually relevant puzzles on the fly.
+- **Dual Game Modes**: Features a "Daily Challenge" for community-wide competition and a "Classic Mode" for continuous, progressive play.
+- **Intelligent Scoring System**: Calculates rewards based on difficulty tier, remaining time, and hint usage.
+- **Neumorphic Interface**: A modern, tactile UI design built with Tailwind CSS and Framer Motion for fluid transitions.
+- **Cross-Platform Feedback**: Integrated haptic feedback and localized audio cues for an immersive gaming experience.
 
 ## Getting Started
 
 ### Installation
 
-- **Clone the Repository**:
-  ```bash
-  git clone git@github.com:Charmingdc/Emojinary
-  ```
-- **Install Dependencies**:
-  ```bash
-  npm install
-  ```
-- **Start Development Server**:
-  ```bash
-  npm run dev
-  ```
+1. Clone the repository:
+   ```bash
+   git clone git@github.com:Charmingdc/Emojinary.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd Emojinary
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
 ### Environment Variables
 
-To enable AI puzzle generation, you must provide a Groq API key in your environment configuration:
+To enable AI puzzle generation, create a `.env` file in the root directory and add:
 
-- `GROQ_API_KEY`: Your API key from the Groq Cloud Console. (Example: `gsk_7jR...`)
-
-# Emojinary API
-
-## Overview
-
-Serverless API architecture built with TypeScript and Vercel Functions. The backend utilizes LangChain and Zod for structured AI output, ensuring all generated puzzles adhere to strict data schemas before reaching the client.
-
-## Features
-
-- LangChain/Groq: Handles LLM inference and prompt orchestration.
-- Zod: Validates AI-generated JSON payloads for runtime safety.
-- Vercel Serverless: Scalable, event-driven endpoint execution.
+```env
+GROQ_API_KEY=your_api_key_here
+```
 
 ## API Documentation
 
@@ -61,10 +55,10 @@ Serverless API architecture built with TypeScript and Vercel Functions. The back
 #### GET /generatePuzzles
 
 **Request**:
-The endpoint accepts query parameters to customize the puzzle generation batch.
+Query Parameters:
 
-- `count`: (Optional) Integer. Specifies the number of puzzles to return (Default: 10).
-- `difficulty`: (Optional) String. Filters generation complexity. Options: `easy`, `medium`, `hard`.
+- `count` (optional): Number of puzzles to generate (default: 8)
+- `difficulty` (optional): Difficulty filter (easy | medium | hard)
 
 **Response**:
 
@@ -73,10 +67,10 @@ The endpoint accepts query parameters to customize the puzzle generation batch.
   "success": true,
   "data": [
     {
-      "emojis": ["🍎", "🥧"],
-      "letters": ["a", "p", "p", "l", "e", "p", "i", "e", "s", "w"],
-      "answer": "applepie",
-      "hint": "A classic American dessert",
+      "emojis": ["⛴️", "🌊", "🏙️"],
+      "letters": ["b", "h", "r", "e", "a", "t", "o", "n", "s", "r"],
+      "answer": "harbor",
+      "hint": "A safe haven for vessels.",
       "difficulty": "easy"
     }
   ]
@@ -85,43 +79,34 @@ The endpoint accepts query parameters to customize the puzzle generation batch.
 
 **Errors**:
 
-- 405: Method Not Allowed (Only GET requests are accepted)
-- 500: Failed to generate puzzles (Occurs during AI service timeouts or schema validation failures)
+- 405: Method Not Allowed
+- 500: Failed to generate puzzles (AI service or Parsing error)
 
 ## Usage
 
-### Game Modes
-
-- **Classic Mode**: Solve a series of 10 AI-generated puzzles. Manage your time effectively to maximize your score and set a new personal record.
-- **Daily Mode**: Compete in a single, high-difficulty puzzle shared by all users for the day. Once completed, the countdown timer tracks the availability of the next challenge.
-
-### Gameplay Mechanics
-
-- **Building Words**: Tap letters from the pool to fill answer slots. You can remove a letter by tapping the slot again.
-- **Utilizing Hints**: If stuck, the hint button reveals a clue about the phrase. Use this sparingly, as it applies a point penalty to your final score.
-- **Timer System**: Each difficulty level provides a specific window of time. Solving puzzles quickly grants a significant time bonus.
+- **Decoding**: Analyze the emoji set in the center of the screen to identify the hidden word.
+- **Input**: Select letters from the letter pool to fill the answer slots. Tapping a filled slot will return the letter to the pool.
+- **Hints**: Use the lightbulb icon if you are stuck, but be aware it reduces your total point potential for that puzzle.
+- **Timer**: Each difficulty level has a specific time limit. If the timer hits zero, the puzzle is marked as "skipped."
 
 ## Technologies Used
 
-| Technology                                          | Purpose                                      |
-| :-------------------------------------------------- | :------------------------------------------- |
-| [React 19](https://react.dev/)                      | Component-based UI architecture              |
-| [TypeScript](https://www.typescriptlang.org/)       | End-to-end type safety                       |
-| [Groq Cloud](https://groq.com/)                     | Llama 3.1 LLM inference                      |
-| [TanStack Query](https://tanstack.com/query/latest) | Asynchronous state management and caching    |
-| [Tailwind CSS](https://tailwindcss.com/)            | Utility-first styling and neumorphic design  |
-| [Framer Motion](https://www.framer.com/motion/)     | Smooth UI transitions and micro-interactions |
-| [Vite](https://vitejs.dev/)                         | Modern frontend tooling and bundling         |
+| Technology         | Purpose                                            |
+| :----------------- | :------------------------------------------------- |
+| **React 19**       | Modern UI composition and state management         |
+| **TypeScript**     | End-to-end type safety and developer productivity  |
+| **Vite**           | Lightning-fast build tooling and HMR               |
+| **LangChain**      | Orchestrating LLM interactions for puzzle logic    |
+| **Tailwind CSS**   | Custom neumorphic styling and responsive design    |
+| **TanStack Query** | Efficient server-state caching and synchronization |
+| **Framer Motion**  | Production-grade animations and gestures           |
 
 ## Contributing
 
-We welcome contributions that improve the gameplay experience or optimize the AI prompt engineering.
-
-- 🍴 Fork the repository.
-- 🌿 Create a feature branch: `git checkout -b feature/AmazingFeature`.
-- 💾 Commit your changes: `git commit -m 'Add some AmazingFeature'`.
-- 🚀 Push to the branch: `git push origin feature/AmazingFeature`.
-- 📝 Open a Pull Request for review.
+- 🚀 Fork the project to your own account.
+- 🌿 Create a feature branch for your changes.
+- 🛠️ Implement your improvements with clean, commented code.
+- 📤 Submit a Pull Request with a detailed explanation of your changes.
 
 ## Author Info
 
@@ -130,12 +115,9 @@ We welcome contributions that improve the gameplay experience or optimize the AI
 - GitHub: [Charmingdc](https://github.com/Charmingdc)
 - Twitter: [@Charmingdc01](https://x.com/Charmingdc01)
 
----
-
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
-![AI](https://img.shields.io/badge/AI-Groq%20Llama%203.1-orange?style=for-the-badge)
 
 [![Readme was generated by Dokugen](https://img.shields.io/badge/Readme%20was%20generated%20by-Dokugen-brightgreen)](https://www.npmjs.com/package/dokugen)
