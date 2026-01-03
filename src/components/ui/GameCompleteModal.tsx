@@ -1,4 +1,6 @@
 import { Trophy, X, AlertCircle } from "lucide-react";
+import { useWindowSize } from "react-use";
+import Confetti from "react-confetti";
 import NavButton from "./NavButton";
 import type { GamePuzzle } from "@/types";
 
@@ -37,6 +39,8 @@ const GameCompleteModal = ({
   handleReplay,
   handleGoHome
 }: Props) => {
+  const { width, height } = useWindowSize();
+
   const puzzleArray = Array.isArray(puzzles) ? puzzles : [puzzles];
   const solvedCount = puzzleArray.filter(
     p => p.puzzleState === "solved"
@@ -73,7 +77,10 @@ const GameCompleteModal = ({
         )}
       </div>
 
-      <div className="flex justify-around w-full max-w-5xl gap-2 text-md font-medium px-6 py-4 text-white mt-2">
+      <div
+        className={`flex justify-around w-full max-w-5xl gap-2 text-md
+     font-medium px-6 py-4 text-white mt-2 ${allSolved ? "mb-20" : ""}`}
+      >
         <div className="text-center">
           Score
           <br />
@@ -152,7 +159,7 @@ const GameCompleteModal = ({
 
       <div
         className={`flex flex-wrap justify-center gap-4 mb-4 ${
-          isSinglePuzzle ? "mt-16" : "mt-2"
+          isSinglePuzzle ? "mt-20" : "mt-2"
         }`}
       >
         {handleReplay && (
@@ -172,6 +179,24 @@ const GameCompleteModal = ({
           Go Home
         </NavButton>
       </div>
+
+      {solvedCount === totalPuzzles && (
+        <Confetti
+          width={width}
+          height={height}
+          numberOfPieces={250}
+          gravity={0.3}
+          opacity={0.8}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "90vh",
+            pointerEvents: "none"
+          }}
+        />
+      )}
     </section>
   );
 };

@@ -18,8 +18,10 @@
     "lucide-react": "^0.560.0",
     "motion": "^12.23.26",
     "react": "^19.1.0",
+    "react-confetti": "^6.4.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.10.1",
+    "react-use": "^17.6.0",
     "zod": "^4.2.1"
   },
   "devDependencies": {

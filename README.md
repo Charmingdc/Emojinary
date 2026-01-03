@@ -1,19 +1,18 @@
-# Emojinary 🧩
+# Emojinary API
 
 ## Overview
 
 ![Emojinary Playing Interface](/public/emojinary-screenshot-1.jpg)
 ![Emojinary Game End Interface](/public/emojinary-screenshot-2.jpg)
 
-Emojinary is a high-performance, full-stack puzzle application that challenges users to decode phrases and concepts from AI-generated emoji sequences. Built with a focus on polished UI/UX, the project utilizes Large Language Models (LLMs) to ensure infinite replayability through dynamic content generation rather than static databases.
+A puzzle generation engine and interactive frontend built with TypeScript and Node.js. The system utilizes Large Language Models via the Groq API and LangChain to programmatically synthesize unique emoji-based word puzzles with varying difficulty levels.
 
 ## Features
 
-- **AI-Driven Puzzle Generation**: Utilizes LangChain and the Groq LPU Inference Engine to generate unique, contextually relevant puzzles on the fly.
-- **Dual Game Modes**: Features a "Daily Challenge" for community-wide competition and a "Classic Mode" for continuous, progressive play.
-- **Intelligent Scoring System**: Calculates rewards based on difficulty tier, remaining time, and hint usage.
-- **Neumorphic Interface**: A modern, tactile UI design built with Tailwind CSS and Framer Motion for fluid transitions.
-- **Cross-Platform Feedback**: Integrated haptic feedback and localized audio cues for an immersive gaming experience.
+- LangChain & Groq: Leverages the gpt-oss-120b model for high-creativity puzzle synthesis and automated hint generation.
+- Zod Validation: Implements strict schema enforcement for AI-generated JSON payloads to ensure runtime stability.
+- Serverless Architecture: Deployed via Vercel Functions for scalable, on-demand API execution.
+- React Query Integration: Optimized frontend state management for asynchronous data fetching and cache invalidation.
 
 ## Getting Started
 
@@ -38,10 +37,10 @@ Emojinary is a high-performance, full-stack puzzle application that challenges u
 
 ### Environment Variables
 
-To enable AI puzzle generation, create a `.env` file in the root directory and add:
+Create a `.env` file in the root directory and include the following:
 
 ```env
-GROQ_API_KEY=your_api_key_here
+GROQ_API_KEY=your_groq_api_key_here
 ```
 
 ## API Documentation
@@ -57,8 +56,8 @@ GROQ_API_KEY=your_api_key_here
 **Request**:
 Query Parameters:
 
-- `count` (optional): Number of puzzles to generate (default: 8)
-- `difficulty` (optional): Difficulty filter (easy | medium | hard)
+- `count` (optional): Number of puzzles to generate. Default is 8.
+- `difficulty` (optional): Difficulty filter. Options: `easy`, `medium`, `hard`.
 
 **Response**:
 
@@ -80,33 +79,35 @@ Query Parameters:
 **Errors**:
 
 - 405: Method Not Allowed
-- 500: Failed to generate puzzles (AI service or Parsing error)
-
-## Usage
-
-- **Decoding**: Analyze the emoji set in the center of the screen to identify the hidden word.
-- **Input**: Select letters from the letter pool to fill the answer slots. Tapping a filled slot will return the letter to the pool.
-- **Hints**: Use the lightbulb icon if you are stuck, but be aware it reduces your total point potential for that puzzle.
-- **Timer**: Each difficulty level has a specific time limit. If the timer hits zero, the puzzle is marked as "skipped."
+- 500: Failed to generate puzzles (AI generation or validation error)
 
 ## Technologies Used
 
-| Technology         | Purpose                                            |
-| :----------------- | :------------------------------------------------- |
-| **React 19**       | Modern UI composition and state management         |
-| **TypeScript**     | End-to-end type safety and developer productivity  |
-| **Vite**           | Lightning-fast build tooling and HMR               |
-| **LangChain**      | Orchestrating LLM interactions for puzzle logic    |
-| **Tailwind CSS**   | Custom neumorphic styling and responsive design    |
-| **TanStack Query** | Efficient server-state caching and synchronization |
-| **Framer Motion**  | Production-grade animations and gestures           |
+| Technology   | Purpose                                               |
+| ------------ | ----------------------------------------------------- |
+| TypeScript   | Type-safe development across frontend and backend     |
+| React 19     | Component-based UI architecture                       |
+| LangChain    | Orchestrating LLM interactions and prompt engineering |
+| Groq         | High-speed AI inference for puzzle generation         |
+| Tailwind CSS | Utility-first styling and neumorphic design patterns  |
+| Vite         | Frontend tooling and fast HMR                         |
+| Motion       | Fluid UI animations and transitions                   |
+
+## Usage
+
+The application provides two distinct gameplay experiences:
+
+- **Classic Mode**: Fetches a randomized set of puzzles from the API. Users solve them sequentially with a per-puzzle timer and scoring system based on speed and hint usage.
+- **Daily Mode**: Fetches a specific, high-difficulty puzzle indexed by the current date, ensuring a shared experience for all players.
+
+To run the project in a production-like environment, use `npm run build` followed by `npm run preview`.
 
 ## Contributing
 
-- 🚀 Fork the project to your own account.
-- 🌿 Create a feature branch for your changes.
-- 🛠️ Implement your improvements with clean, commented code.
-- 📤 Submit a Pull Request with a detailed explanation of your changes.
+- Fork the repository and create your feature branch.
+- Ensure all TypeScript types are correctly defined and exported.
+- Follow the existing ESLint and Prettier configurations.
+- Submit a pull request with a detailed description of your changes.
 
 ## Author Info
 
@@ -115,9 +116,9 @@ Query Parameters:
 - GitHub: [Charmingdc](https://github.com/Charmingdc)
 - Twitter: [@Charmingdc01](https://x.com/Charmingdc01)
 
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
+![React](https://img.shields.io/badge/React-19-61DAFB)
+![Vercel](https://img.shields.io/badge/Vercel-Deployed-black)
 
 [![Readme was generated by Dokugen](https://img.shields.io/badge/Readme%20was%20generated%20by-Dokugen-brightgreen)](https://www.npmjs.com/package/dokugen)
