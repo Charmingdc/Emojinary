@@ -10,4 +10,9 @@ interface Puzzle {
   difficulty: Difficulty;
 }
 
-export type { Difficulty, AudioType, Puzzle };
+interface GamePuzzle extends Puzzle {
+  puzzleState: "unsolved" | "solved" | "skipped";
+  hintUsed: boolean;
+}
+
+export type { Difficulty, AudioType, Puzzle, GamePuzzle };

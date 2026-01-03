@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import useDailyPuzzle from "@/hooks/useDailyPuzzle";
@@ -9,22 +10,36 @@ import ErrorScreen from "@/components/screens/ErrorScreen";
 import DailyCompletedScreen from "@/components/screens/DailyCompletedScreen";
 import DailyModeGame from "@/components/DailyModeGame";
 
+import type { GamePuzzle } from "@/types";
+
 const DailyModeScreen = () => {
   const navigate = useNavigate();
   const { play } = useGameAudio();
-
   const { hasPlayedToday, timeUntilNextPuzzle } = useHasPlayedToday();
 
-  const { data: puzzles, isLoading, isError } = useDailyPuzzle();
+  const { data: puzzleData, isLoading, isError } = useDailyPuzzle();
+  const [dailyPuzzle, setDailyPuzzle] = useState<GamePuzzle | null>(null);
+
+  useEffect(() => {
+    if (!puzzleData) return;
+
+    setDailyPuzzle({
+      ...puzzleData[0],
+      puzzleState: "unsolved",
+      hintUsed: false
+    });
+  }, [puzzleData]);
 
   if (isLoading) return <LoadingScreen />;
-  if (isError || !puzzles || puzzles.length === 0) return <ErrorScreen />;
+  if (isError || !dailyPuzzle) return <ErrorScreen />;
 
-  if (hasPlayedToday) {
+  {
+    /* if (hasPlayedToday) {
     return <DailyCompletedScreen timeUntilNextPuzzle={timeUntilNextPuzzle} />;
+  } */
   }
 
-  return <DailyModeGame puzzle={puzzles[0]} play={play} navigate={navigate} />;
+  return <DailyModeGame puzzle={dailyPuzzle} play={play} navigate={navigate} />;
 };
 
 export default DailyModeScreen;

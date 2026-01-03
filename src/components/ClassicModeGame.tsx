@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import type { Dispatch, SetStateAction } from "react";
 
 import StatsBar from "@/components/ui/StatsBar";
 import GameControls from "@/components/GameControls";
@@ -12,11 +13,12 @@ import { shuffleArray, calculatePoints, vibrate } from "@/utils";
 import usePerPuzzleTimer from "@/hooks/usePerPuzzleTimer";
 import usePuzzleInput from "@/hooks/usePuzzleInput";
 
-import type { AudioType, Puzzle } from "@/types";
+import type { AudioType, GamePuzzle } from "@/types";
 type AnswerState = "neutral" | "correct" | "wrong";
 
 type ClassicModeGameProps = {
-  puzzles: Puzzle[];
+  puzzles: GamePuzzle[];
+  setPuzzles: Dispatch<SetStateAction<GamePuzzle[]>>;
   play: (sound: AudioType) => void;
   bestScore: number;
   updateBestScore: (score: number) => void;
@@ -26,6 +28,7 @@ type ClassicModeGameProps = {
 
 const ClassicModeGame = ({
   puzzles,
+  setPuzzles,
   play,
   bestScore,
   updateBestScore,
@@ -37,9 +40,9 @@ const ClassicModeGame = ({
   const [points, setPoints] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [usedHint, setUsedHint] = useState(false);
-  const [puzzleSkipCount, setPuzzleSkipCount] = useState(0);
   const [answerState, setAnswerState] = useState<AnswerState>("neutral");
   const [gameCompleted, setGameCompleted] = useState(false);
+  const [finalStats, setFinalStats] = useState({ solved: 0, skipped: 0 });
 
   const puzzleCount = puzzles.length;
   const currentPuzzle = puzzles[currentPuzzleIdx];
@@ -85,7 +88,15 @@ const ClassicModeGame = ({
       remainingTime,
       usedHint
     );
+
     setPoints(prev => prev + earned);
+
+    setPuzzles(prev =>
+      prev.map((puzzle, idx) =>
+        idx === currentPuzzleIdx ? { ...puzzle, puzzleState: "solved" } : puzzle
+      )
+    );
+
     setAnswerState("correct");
     play("correct");
 
@@ -97,15 +108,13 @@ const ClassicModeGame = ({
     setTimeout(goToNextPuzzle, 500);
   };
 
-  // --- Letter Pool Handlers ---
-
   const handleLetterPick = (letter: string, index: number) => {
     const inserted = handleLetterClick(letter);
     if (!inserted) return;
 
     setLetterPool(prev => {
       const next = [...prev];
-      next.splice(index, 1); // remove clicked letter by index
+      next.splice(index, 1);
       return next;
     });
   };
@@ -114,10 +123,8 @@ const ClassicModeGame = ({
     const removed = handleSlotClick(slotIdx);
     if (!removed) return;
 
-    setLetterPool(prev => shuffleArray([...prev, removed])); // add back removed letter
+    setLetterPool(prev => shuffleArray([...prev, removed]));
   };
-
-  // --- Effects ---
 
   useEffect(() => {
     resetSlots();
@@ -143,8 +150,18 @@ const ClassicModeGame = ({
 
   useEffect(() => {
     if (!gameCompleted || points <= bestScore) return;
+
     updateBestScore(points);
   }, [gameCompleted, points, bestScore]);
+
+  useEffect(() => {
+    if (!gameCompleted) return;
+
+    setFinalStats({
+      solved: puzzles.filter(p => p.puzzleState === "solved").length,
+      skipped: puzzles.filter(p => p.puzzleState === "skipped").length
+    });
+  }, [gameCompleted, puzzles]);
 
   return (
     <main className="w-full flex flex-col items-center gap-3 p-4 pb-12">
@@ -169,9 +186,9 @@ const ClassicModeGame = ({
               showHint,
               setShowHint,
               setUsedHint,
+              setPuzzles,
               currentPuzzleIdx,
               setCurrentPuzzleIdx,
-              setPuzzleSkipCount,
               setGameCompleted,
               puzzleCount,
               resetTimer: reset
@@ -201,8 +218,8 @@ const ClassicModeGame = ({
         <GameCompleteModal
           score={points}
           bestScore={bestScore}
-          puzzlesSolved={puzzleCount - puzzleSkipCount}
-          puzzleCount={puzzleCount}
+          puzzlesSolved={finalStats.solved}
+          puzzlesSkipped={finalStats.skipped}
           handleReplay={newGame}
           handleGoHome={() => navigate("/")}
         />

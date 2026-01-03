@@ -7,7 +7,7 @@ interface Props {
   score: number;
   bestScore?: number;
   puzzlesSolved: number;
-  puzzleCount: number;
+  puzzlesSkipped: number;
   handleReplay?: () => void;
   handleGoHome: () => void;
 }
@@ -16,7 +16,7 @@ const GameCompleteModal = ({
   score,
   bestScore,
   puzzlesSolved,
-  puzzleCount,
+  puzzlesSkipped,
   handleReplay,
   handleGoHome
 }: Props) => {
@@ -41,6 +41,7 @@ const GameCompleteModal = ({
             <Star size={15} weight="fill" /> Score:
             <span className="text-primary"> {score} </span>
           </li>
+
           {bestScore && (
             <li>
               <Star size={15} weight="fill" className="text-accent" /> Best
@@ -48,11 +49,15 @@ const GameCompleteModal = ({
               <span className="text-primary"> {bestScore} </span>
             </li>
           )}
+
           <li>
-            <PuzzlePiece size={15} weight="fill" /> puzzles:
-            <span className="text-primary">
-              {puzzlesSolved}/{puzzleCount}
-            </span>
+            <PuzzlePiece size={15} weight="fill" /> Puzzle(s) Solved:
+            <span className="text-primary">{puzzlesSolved}</span>
+          </li>
+
+          <li>
+            <PuzzlePiece size={15} weight="fill" /> Puzzle(s) Skipped:
+            <span className="text-primary">{puzzlesSkipped}</span>
           </li>
         </ul>
 

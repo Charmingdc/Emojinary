@@ -13,12 +13,12 @@ import usePerPuzzleTimer from "@/hooks/usePerPuzzleTimer";
 import usePuzzleInput from "@/hooks/usePuzzleInput";
 import useHasPlayedToday from "@/hooks/useHasPlayedToday";
 
-import type { AudioType, Puzzle } from "@/types";
+import type { AudioType, GamePuzzle } from "@/types";
 
 type AnswerState = "neutral" | "correct" | "wrong";
 
 type DailyModeGameProps = {
-  puzzle: Puzzle;
+  puzzle: GamePuzzle;
   play: (sound: AudioType) => void;
   navigate: (path: string) => void;
 };
@@ -33,6 +33,7 @@ const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
   const [usedHint, setUsedHint] = useState(false);
   const [answerState, setAnswerState] = useState<AnswerState>("neutral");
   const [gameCompleted, setGameCompleted] = useState(false);
+  const [finalStats, setFinalStats] = useState({ solved: 0, skipped: 0 });
 
   const {
     slots: selectedLetters,
@@ -44,6 +45,7 @@ const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
 
   const handleTimerExpire = () => {
     markPlayedToday();
+    setPuzzleState("skipped");
     setGameCompleted(true);
   };
 
@@ -57,15 +59,39 @@ const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
     onExpire: handleTimerExpire
   });
 
+  const setPuzzleState = (state: "solved" | "skipped" | "unsolved") => {
+    puzzle.puzzleState = state;
+    if (state === "skipped") puzzle.hintUsed = usedHint;
+  };
+
   const handleCorrectAnswer = () => {
     const earned = calculatePoints(puzzle.difficulty, remainingTime, usedHint);
 
     setPoints(earned);
     setAnswerState("correct");
+    setPuzzleState("solved");
     play("correct");
     markPlayedToday();
 
     setTimeout(() => setGameCompleted(true), 600);
+  };
+
+  const handleLetterPickWrapper = (letter: string, index: number) => {
+    const inserted = handleLetterClick(letter);
+    if (!inserted) return;
+
+    setLetterPool(prev => {
+      const next = [...prev];
+      next.splice(index, 1);
+      return next;
+    });
+  };
+
+  const handleLetterRemoveWrapper = (slotIdx: number) => {
+    const removed = handleSlotClick(slotIdx);
+    if (!removed) return;
+
+    setLetterPool(prev => shuffleArray([...prev, removed]));
   };
 
   useEffect(() => {
@@ -75,18 +101,25 @@ const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
   }, [puzzle]);
 
   useEffect(() => {
-    if (gameCompleted || !isComplete) return;
+    if (!isComplete || gameCompleted) return;
 
     const userAnswer = selectedLetters.join("").toLowerCase();
-    const correctAnswer = puzzle.answer.toLowerCase();
-
-    if (userAnswer === correctAnswer) {
+    if (userAnswer === puzzle.answer.toLowerCase()) {
       handleCorrectAnswer();
     } else {
       setAnswerState("wrong");
       vibrate([80, 10, 80]);
     }
   }, [isComplete]);
+
+  useEffect(() => {
+    if (!gameCompleted) return;
+
+    setFinalStats({
+      solved: puzzle.puzzleState === "solved" ? 1 : 0,
+      skipped: puzzle.puzzleState === "skipped" ? 1 : 0
+    });
+  }, [gameCompleted, puzzle]);
 
   return (
     <main className="w-full flex flex-col items-center gap-3 p-4 pb-12">
@@ -112,7 +145,6 @@ const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
             setUsedHint={setUsedHint}
             resetTimer={resetTimer}
           />
-
           <PuzzleBox puzzle={puzzle} />
         </div>
 
@@ -125,19 +157,22 @@ const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
 
       <AnswerSlots
         slots={selectedLetters}
-        onSlotClick={handleSlotClick}
+        onSlotClick={handleLetterRemoveWrapper}
         answerState={answerState}
       />
 
-      <LetterPool letters={letterPool} onLetterClick={handleLetterClick} />
+      <LetterPool
+        letters={letterPool}
+        onLetterClick={handleLetterPickWrapper}
+      />
 
       {answerState === "correct" && <CorrectAnswerBanner />}
 
       {gameCompleted && (
         <GameCompleteModal
           score={points}
-          puzzlesSolved={answerState === "correct" ? 1 : 0}
-          puzzleCount={1}
+          puzzlesSolved={finalStats.solved}
+          puzzlesSkipped={finalStats.skipped}
           handleGoHome={() => navigate("/")}
         />
       )}
