@@ -9,12 +9,12 @@ interface GameControlsProps {
   showHint: boolean;
   setShowHint: Dispatch<SetStateAction<boolean>>;
   setUsedHint: Dispatch<SetStateAction<boolean>>;
-  setPuzzles: Dispatch<SetStateAction<GamePuzzle[]>>;
   resetTimer: () => void;
 
   // Optional (Classic mode only)
   currentPuzzleIdx?: number;
   setCurrentPuzzleIdx?: Dispatch<SetStateAction<number>>;
+  setPuzzles?: Dispatch<SetStateAction<GamePuzzle[]>>;
   setGameCompleted?: Dispatch<SetStateAction<boolean>>;
   puzzleCount?: number;
 }
@@ -23,9 +23,9 @@ const GameControls: React.FC<GameControlsProps> = ({
   showHint,
   setShowHint,
   setUsedHint,
-  setPuzzles,
   resetTimer,
   currentPuzzleIdx,
+  setPuzzles,
   setCurrentPuzzleIdx,
   setGameCompleted,
   puzzleCount
@@ -36,6 +36,7 @@ const GameControls: React.FC<GameControlsProps> = ({
     currentPuzzleIdx !== undefined &&
     puzzleCount !== undefined &&
     setCurrentPuzzleIdx !== undefined &&
+    setPuzzles !== undefined &&
     setGameCompleted !== undefined;
 
   const isLast = isClassicMode && currentPuzzleIdx === puzzleCount - 1;

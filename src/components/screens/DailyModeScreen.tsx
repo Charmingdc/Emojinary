@@ -33,10 +33,8 @@ const DailyModeScreen = () => {
   if (isLoading) return <LoadingScreen />;
   if (isError || !dailyPuzzle) return <ErrorScreen />;
 
-  {
-    /* if (hasPlayedToday) {
+  if (hasPlayedToday) {
     return <DailyCompletedScreen timeUntilNextPuzzle={timeUntilNextPuzzle} />;
-  } */
   }
 
   return <DailyModeGame puzzle={dailyPuzzle} play={play} navigate={navigate} />;

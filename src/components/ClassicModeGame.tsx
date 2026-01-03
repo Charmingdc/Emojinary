@@ -186,9 +186,9 @@ const ClassicModeGame = ({
               showHint,
               setShowHint,
               setUsedHint,
-              setPuzzles,
               currentPuzzleIdx,
               setCurrentPuzzleIdx,
+              setPuzzles,
               setGameCompleted,
               puzzleCount,
               resetTimer: reset

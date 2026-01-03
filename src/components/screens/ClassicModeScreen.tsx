@@ -9,7 +9,7 @@ import LoadingScreen from "@/components/screens/LoadingScreen";
 import ErrorScreen from "@/components/screens/ErrorScreen";
 import ClassicModeGame from "@/components/ClassicModeGame";
 
-import type { GamePuzzle } from "@/types";
+import type { Puzzle, GamePuzzle } from "@/types";
 
 const ClassicModeScreen = () => {
   const [gamePuzzles, setGamePuzzles] = useState<GamePuzzle[]>([]);
@@ -23,7 +23,7 @@ const ClassicModeScreen = () => {
   useEffect(() => {
     if (puzzles) {
       setGamePuzzles(
-        puzzles.map(puzzle => ({
+        puzzles.map((puzzle: Puzzle) => ({
           ...puzzle,
           puzzleState: "unsolved",
           hintUsed: false
