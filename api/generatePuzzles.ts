@@ -20,7 +20,7 @@ const puzzlesSchema = z.object({
 const model = new ChatGroq({
   model: "openai/gpt-oss-120b",
   apiKey: process.env.GROQ_API_KEY,
-  temperature: 0.2,
+  temperature: 0.1,
   maxRetries: 0
 });
 

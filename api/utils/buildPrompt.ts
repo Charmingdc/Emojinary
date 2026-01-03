@@ -33,13 +33,16 @@ UNIQUENESS REQUIREMENT (CRITICAL):
   - the same answer
   - the same emoji combinations
   - the same core concept
-- Avoid overused answers like:
-  sun, moon, star, fire, water, love, heart
+
+DIFFICULTY GUIDANCE:
+- easy: common words, strong emoji association, clear hints
+- medium: less direct association, mild abstraction
+- hard: abstract association, weaker emoji clues, subtler hints
+
 
 PUZZLE RULES:
 - emojis:
   - 3–6 emojis
-  - Use indirect symbolism, not literal emoji-to-word mapping
 - letters:
   - Must include all letters of the answer
   - Add 3–4 distractor letters NOT in the answer
@@ -54,10 +57,6 @@ PUZZLE RULES:
   - must NOT contain synonyms of the answer
 - difficulty:
   - ${difficulty ?? `"easy", "medium", or "hard"`}
-
-VARIATION ENFORCEMENT:
-If a puzzle feels obvious, generic, or similar to common emoji games,
-discard it internally and generate a better one.
 
 EXAMPLE OUTPUT FORMAT:
 Return ONLY valid JSON:
