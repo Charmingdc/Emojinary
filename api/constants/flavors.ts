@@ -1,57 +1,73 @@
 const flavors: string[] = [
-  // Everyday ideas & feelings
   "feelings and emotions",
   "thoughts and ideas",
   "funny things",
   "common sayings",
-
-  // Things around us
   "household items",
   "tools and gadgets",
   "food and drinks",
   "clothes and accessories",
   "shapes and patterns",
-
-  // People & actions
+  "decor and furniture",
+  "stationery and office supplies",
+  "kitchen utensils",
+  "vehicles and transport",
   "things people do",
   "jobs and professions",
   "daily routines",
   "friends and family",
-
-  // Nature & animals
+  "gestures and expressions",
+  "sports and exercises",
+  "hobbies and crafts",
   "animals",
   "plants and trees",
   "weather",
   "places outdoors",
   "space and planets",
-
-  // Fun & culture
+  "insects and bugs",
+  "mountains, rivers, and seas",
   "movies and TV shows",
   "music and instruments",
   "sports",
   "toys and games",
   "art and crafts",
-
-  // Technology & stuff we use
+  "books and literature",
+  "superheroes and cartoons",
+  "memes and internet culture",
+  "famous people and celebrities",
   "phones and computers",
   "cars and machines",
   "science and experiments",
-
-  // Places & travel
+  "apps and websites",
+  "gadgets and wearables",
+  "robots and AI",
+  "gaming consoles and games",
   "cities and towns",
   "countries and landmarks",
   "transportation",
   "buildings",
-
-  // Time & change
+  "parks and gardens",
+  "beaches and oceans",
+  "mountains and forests",
   "time and clocks",
   "growing up",
   "fast and slow",
-
-  // Senses & appearance
+  "seasons and holidays",
   "colors",
   "textures",
-  "hot and cold"
+  "hot and cold",
+  "sounds and noises",
+  "smells and scents",
+  "taste sensations",
+  "light and darkness",
+  "shapes and sizes",
+  "quirky ideas",
+  "tiny details",
+  "opposites and contrasts",
+  "everyday challenges",
+  "imaginative worlds",
+  "unexpected connections",
+  "hidden patterns"
 ];
 
 export default flavors;

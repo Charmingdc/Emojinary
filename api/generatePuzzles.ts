@@ -63,12 +63,13 @@ const generatePuzzles = async (req: VercelRequest, res: VercelResponse) => {
     | "hard"
     | undefined;
 
-  const { primary, secondary } = pickFlavors(flavors);
+  const { primary, secondary, tertiary } = pickFlavors(flavors);
 
   const prompt = buildPrompt({
     count,
     primaryFlavor: primary,
     secondaryFlavor: secondary,
+    tertiaryFlavor: tertiary,
     difficulty
   });
 

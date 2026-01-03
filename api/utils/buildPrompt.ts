@@ -4,6 +4,7 @@ type BuildPuzzlePromptArgs = {
   count: number;
   primaryFlavor: string;
   secondaryFlavor: string;
+  tertiaryFlavor: string;
   difficulty?: Difficulty;
 };
 
@@ -11,6 +12,7 @@ const buildPrompt = ({
   count,
   primaryFlavor,
   secondaryFlavor,
+  tertiaryFlavor,
   difficulty
 }: BuildPuzzlePromptArgs): string => {
   return `
@@ -24,8 +26,9 @@ REQUEST CONTEXT:
 PUZZLE THEME (IMPORTANT):
 - Primary domain: ${primaryFlavor}
 - Secondary domain: ${secondaryFlavor}
+- tertiary domain: ${tertiaryFlavor}
 - Each puzzle must clearly fit at least ONE of these domains
-- Across the full set, use BOTH domains multiple times
+- Across the full set, use all domains inter-wovenly 
 
 UNIQUENESS REQUIREMENT (CRITICAL):
 - Generate ${count} puzzles that are clearly different from each other
@@ -35,10 +38,16 @@ UNIQUENESS REQUIREMENT (CRITICAL):
   - the same core concept
 
 DIFFICULTY GUIDANCE:
-- easy: common words, strong emoji association, clear hints
-- medium: less direct association, mild abstraction
-- hard: abstract association, weaker emoji clues, subtler hints
-
+- easy:
+  - common words
+  - strong emoji association
+  - hint: clear and direct, guides player almost immediately to the answer
+- medium:
+  - less direct association, mild abstraction
+  - hint: useful but slightly tricky, encourages thinking about the emoji sequence
+- hard:
+  - abstract association, weaker emoji clues, subtler hints
+  - hint: subtle and suggestive, guides player without revealing the answer outright
 
 PUZZLE RULES:
 - emojis:
@@ -53,8 +62,9 @@ PUZZLE RULES:
   - 2–10 characters
   - no spaces, hyphens, or underscores
 - hint:
-  - vague, indirect, suggestive
-  - must NOT contain synonyms of the answer
+  - must match difficulty guidance above
+  - should NOT include direct synonyms or part of the answer
+  - strike a balance: helpful enough to solve but not too obvious
 - difficulty:
   - ${difficulty ?? `"easy", "medium", or "hard"`}
 

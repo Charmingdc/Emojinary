@@ -56,7 +56,7 @@ const GameCompleteModal = ({
   const trophyColor = getTrophyColor(solvedCount, totalPuzzles);
 
   return (
-    <section className="fixed top-0 left-0 w-screen h-screen bg-black/60 backdrop-blur-xl z-50 flex flex-col items-center justify-start p-6 overflow-hidden">
+    <section className="fixed top-0 left-0 bottom-0 w-screen h-screen bg-black/60 backdrop-blur-xl z-50 flex flex-col items-center justify-start p-6 overflow-hidden">
       <div className="flex flex-col items-center gap-1 mt-4">
         <Trophy size={96} className={`${trophyColor} animate-bounce`} />
 
@@ -109,10 +109,10 @@ const GameCompleteModal = ({
 
       {!allSolved && (
         <div
-          className={`w-full max-w-5xl mt-2 ${
+          className={`w-full max-w-5xl ${
             isSinglePuzzle
-              ? "max-h-auto"
-              : "flex-1 overflow-auto max-h-[calc(100vh-240px)] -mt-2"
+              ? "max-h-auto mt-2"
+              : "flex-1 overflow-auto max-h-[calc(100vh-240px)]"
           }`}
         >
           <div className="grid grid-cols-[2fr_2fr_1fr] gap-4 px-6 py-3 font-semibold text-gray-300 border-b border-gray-500 sticky top-0 bg-black/60 backdrop-blur-lg z-10">
@@ -152,7 +152,7 @@ const GameCompleteModal = ({
 
       <div
         className={`flex flex-wrap justify-center gap-4 mb-4 ${
-          isSinglePuzzle ? "mt-16" : "mt-4"
+          isSinglePuzzle ? "mt-16" : "mt-2"
         }`}
       >
         {handleReplay && (

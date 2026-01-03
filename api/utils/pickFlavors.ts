@@ -1,17 +1,17 @@
 type PickedFlavors = {
   primary: string;
   secondary: string;
+  tertiary: string;
 };
 
 const pickFlavors = (flavors: string[]): PickedFlavors => {
-  const primary = flavors[Math.floor(Math.random() * flavors.length)];
+  const shuffled = [...flavors].sort(() => Math.random() - 0.5);
 
-  let secondary = primary;
-  while (secondary === primary) {
-    secondary = flavors[Math.floor(Math.random() * flavors.length)];
-  }
-
-  return { primary, secondary };
+  return {
+    primary: shuffled[0],
+    secondary: shuffled[1],
+    tertiary: shuffled[2]
+  };
 };
 
 export default pickFlavors;
