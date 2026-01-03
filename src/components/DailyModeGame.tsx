@@ -33,7 +33,6 @@ const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
   const [usedHint, setUsedHint] = useState(false);
   const [answerState, setAnswerState] = useState<AnswerState>("neutral");
   const [gameCompleted, setGameCompleted] = useState(false);
-  const [finalStats, setFinalStats] = useState({ solved: 0, skipped: 0 });
 
   const {
     slots: selectedLetters,
@@ -112,15 +111,6 @@ const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
     }
   }, [isComplete]);
 
-  useEffect(() => {
-    if (!gameCompleted) return;
-
-    setFinalStats({
-      solved: puzzle.puzzleState === "solved" ? 1 : 0,
-      skipped: puzzle.puzzleState === "skipped" ? 1 : 0
-    });
-  }, [gameCompleted, puzzle]);
-
   return (
     <main className="w-full flex flex-col items-center gap-3 p-4 pb-12">
       <h2 className="self-start -mt-4">🕹️ Daily Mode</h2>
@@ -171,8 +161,7 @@ const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
       {gameCompleted && (
         <GameCompleteModal
           score={points}
-          puzzlesSolved={finalStats.solved}
-          puzzlesSkipped={finalStats.skipped}
+          puzzles={puzzle}
           handleGoHome={() => navigate("/")}
         />
       )}

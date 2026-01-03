@@ -42,7 +42,6 @@ const ClassicModeGame = ({
   const [usedHint, setUsedHint] = useState(false);
   const [answerState, setAnswerState] = useState<AnswerState>("neutral");
   const [gameCompleted, setGameCompleted] = useState(false);
-  const [finalStats, setFinalStats] = useState({ solved: 0, skipped: 0 });
 
   const puzzleCount = puzzles.length;
   const currentPuzzle = puzzles[currentPuzzleIdx];
@@ -154,15 +153,6 @@ const ClassicModeGame = ({
     updateBestScore(points);
   }, [gameCompleted, points, bestScore]);
 
-  useEffect(() => {
-    if (!gameCompleted) return;
-
-    setFinalStats({
-      solved: puzzles.filter(p => p.puzzleState === "solved").length,
-      skipped: puzzles.filter(p => p.puzzleState === "skipped").length
-    });
-  }, [gameCompleted, puzzles]);
-
   return (
     <main className="w-full flex flex-col items-center gap-3 p-4 pb-12">
       <h2 className="self-start -mt-4">🕹️ Classic Mode</h2>
@@ -218,8 +208,7 @@ const ClassicModeGame = ({
         <GameCompleteModal
           score={points}
           bestScore={bestScore}
-          puzzlesSolved={finalStats.solved}
-          puzzlesSkipped={finalStats.skipped}
+          puzzles={puzzles}
           handleReplay={newGame}
           handleGoHome={() => navigate("/")}
         />

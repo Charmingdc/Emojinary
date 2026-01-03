@@ -1,13 +1,11 @@
-import { motion } from "motion/react";
-import { PuzzlePiece, Star } from "@phosphor-icons/react";
-import { Trophy } from "lucide-react";
+import { Trophy, Check, X, AlertCircle } from "lucide-react";
 import NavButton from "./NavButton";
+import type { GamePuzzle } from "@/types";
 
 interface Props {
   score: number;
   bestScore?: number;
-  puzzlesSolved: number;
-  puzzlesSkipped: number;
+  puzzles: GamePuzzle | GamePuzzle[];
   handleReplay?: () => void;
   handleGoHome: () => void;
 }
@@ -15,72 +13,121 @@ interface Props {
 const GameCompleteModal = ({
   score,
   bestScore,
-  puzzlesSolved,
-  puzzlesSkipped,
+  puzzles,
   handleReplay,
   handleGoHome
 }: Props) => {
+  const puzzleArray = Array.isArray(puzzles) ? puzzles : [puzzles];
+
+  const solvedCount = puzzleArray.filter(
+    p => p.puzzleState === "solved"
+  ).length;
+  const skippedCount = puzzleArray.filter(
+    p => p.puzzleState === "skipped"
+  ).length;
+
+  const isSinglePuzzle = puzzleArray.length === 1;
+
   return (
-    <section className="w-screen h-screen fixed top-0 bottom-0 flex items-center justify-center bg-black/10 backdrop-blur-sm z-50">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: -16 }}
-        whileInView={{
-          opacity: 1,
-          scale: 1,
-          y: 0,
-          transition: { duration: 0.25, ease: "easeOut" }
-        }}
-        className="w-[80%] min-h-56 flex flex-col items-center gap-3 bg-background text-foreground py-10 px-4 border rounded-2xl shadow-neumorphic-choc -mt-10"
-      >
-        <Trophy size={72} className="text-accent animate-bounce" />
+    <section className="fixed top-0 left-0 w-screen h-screen bg-black/60 backdrop-blur-xl z-50 flex flex-col items-center justify-start p-6 overflow-hidden">
+      <div className="flex flex-col items-center gap-3 mt-4">
+        <Trophy size={96} className="text-accent animate-bounce" />
+        <h1 className="text-3xl font-bold text-white">Well Done!</h1>
+      </div>
 
-        <h2 className="text-center rotate-2 mt-1"> Welldone! </h2>
-
-        <ul className="w-full flex flex-col items-center gap-2 mt-2 [&_li]:flex [&_li]:items-center [&_li]:gap-1">
-          <li>
-            <Star size={15} weight="fill" /> Score:
-            <span className="text-primary"> {score} </span>
-          </li>
-
-          {bestScore && (
-            <li>
-              <Star size={15} weight="fill" className="text-accent" /> Best
-              Score:
-              <span className="text-primary"> {bestScore} </span>
-            </li>
-          )}
-
-          <li>
-            <PuzzlePiece size={15} weight="fill" /> Puzzle(s) Solved:
-            <span className="text-primary">{puzzlesSolved}</span>
-          </li>
-
-          <li>
-            <PuzzlePiece size={15} weight="fill" /> Puzzle(s) Skipped:
-            <span className="text-primary">{puzzlesSkipped}</span>
-          </li>
-        </ul>
-
-        <div className="w-full flex flex-wrap items-center justify-center gap-3 mt-8">
-          {handleReplay && (
-            <NavButton
-              wrapperClassName="w-32"
-              className="py-3 px-5"
-              onClick={handleReplay}
-            >
-              Replay
-            </NavButton>
-          )}
-
-          <NavButton
-            wrapperClassName="w-32"
-            className="py-3 px-5"
-            onClick={handleGoHome}
-          >
-            Go Home
-          </NavButton>
+      <div className="flex justify-around w-full max-w-5xl text-lg font-medium px-6 py-4 border-b border-gray-400 mt-4 text-white">
+        <div className="text-center">
+          Score
+          <br />
+          <span className="text-primary text-2xl">{score}</span>
         </div>
-      </motion.div>
+        {bestScore && (
+          <div className="text-center">
+            Best
+            <br />
+            <span className="text-primary text-2xl">{bestScore}</span>
+          </div>
+        )}
+        <div className="text-center text-green-400">
+          Solved
+          <br />
+          <span className="text-2xl">{solvedCount}</span>
+        </div>
+        <div className="text-center text-red-400">
+          Skipped
+          <br />
+          <span className="text-2xl">{skippedCount}</span>
+        </div>
+      </div>
+
+      <div
+        className={`w-full max-w-5xl mt-2 ${
+          isSinglePuzzle
+            ? "max-h-auto"
+            : "flex-1 overflow-auto max-h-[calc(100vh-240px)]"
+        }`}
+      >
+        <div className="grid grid-cols-[2fr_2fr_1fr] gap-4 px-6 py-3 font-semibold text-gray-300 border-b border-gray-500 sticky top-0 bg-black/60 backdrop-blur-lg z-10">
+          <span>Emojis</span>
+          <span>Answer</span>
+          <span>Status</span>
+        </div>
+
+        {puzzleArray.map((puzzle, idx) => (
+          <div
+            key={idx}
+            className="grid grid-cols-[2fr_2fr_1fr] gap-4 items-center px-6 py-4 border-b border-gray-700 hover:bg-white/5"
+          >
+            <div className="flex flex-wrap gap-1 truncate text-white">
+              {puzzle.emojis.map((e, i) => (
+                <span key={i}>
+                  {e}
+                  {i < puzzle.emojis.length - 1 ? "+" : ""}
+                </span>
+              ))}
+            </div>
+
+            <div className="text-center truncate font-medium text-white">
+              {puzzle.answer}
+            </div>
+
+            <div className="flex justify-center items-center">
+              {puzzle.puzzleState === "solved" && (
+                <Check size={18} className="text-green-400" />
+              )}
+              {puzzle.puzzleState === "skipped" && (
+                <X size={18} className="text-red-400" />
+              )}
+              {puzzle.puzzleState === "unsolved" && (
+                <AlertCircle size={18} className="text-gray-400" />
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div
+        className={`flex flex-wrap justify-center gap-4 mb-4 ${
+          isSinglePuzzle ? "mt-16" : "mt-4"
+        }`}
+      >
+        {handleReplay && (
+          <NavButton
+            wrapperClassName="w-36"
+            className="py-3 px-6"
+            onClick={handleReplay}
+          >
+            Replay
+          </NavButton>
+        )}
+        <NavButton
+          wrapperClassName="w-36"
+          className="py-3 px-6"
+          onClick={handleGoHome}
+        >
+          Go Home
+        </NavButton>
+      </div>
     </section>
   );
 };
