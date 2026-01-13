@@ -1,5 +1,7 @@
 type Difficulty = "easy" | "medium" | "hard";
 
+type InternalDifficulty = "easy" | "medium" | "hard" | "random";
+
 type AudioType = "click" | "correct" | "wrong";
 
 interface Puzzle {
@@ -15,4 +17,4 @@ interface GamePuzzle extends Puzzle {
   hintUsed: boolean;
 }
 
-export type { Difficulty, AudioType, Puzzle, GamePuzzle };
+export type { Difficulty, InternalDifficulty, AudioType, Puzzle, GamePuzzle };

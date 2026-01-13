@@ -1,9 +1,8 @@
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 
-import generatePuzzles, {
-  type GeneratePuzzlesParams
-} from "@/api/generatePuzzles";
+import usePuzzlesDifficulty from "@/hooks/usePuzzlesDifficulty";
+import generatePuzzles from "@/api/generatePuzzles";
 
 const generateGameKey = () => {
   const array = new Uint32Array(1);
@@ -11,17 +10,13 @@ const generateGameKey = () => {
   return array[0];
 };
 
-const useGeneratedPuzzles = (params: GeneratePuzzlesParams = {}) => {
+const useGeneratedPuzzles = ({ count = 8 }: { count?: number } = {}) => {
+  const { difficulty } = usePuzzlesDifficulty();
   const gameKeyRef = useRef<number>(generateGameKey());
 
   const query = useQuery({
-    queryKey: [
-      "generated-puzzles",
-      gameKeyRef.current,
-      params.count ?? "default",
-      params.difficulty ?? "any"
-    ],
-    queryFn: () => generatePuzzles(params),
+    queryKey: ["generated-puzzles", gameKeyRef.current, count, difficulty],
+    queryFn: () => generatePuzzles({ count, difficulty }),
     staleTime: Infinity,
     retry: 1,
     refetchOnWindowFocus: false

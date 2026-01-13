@@ -1,4 +1,4 @@
-type Difficulty = "easy" | "medium" | "hard";
+type Difficulty = "easy" | "medium" | "hard" | "random";
 
 type BuildPuzzlePromptArgs = {
   count: number;
@@ -66,7 +66,7 @@ PUZZLE RULES:
   - should NOT include direct synonyms or part of the answer
   - strike a balance: helpful enough to solve but not too obvious
 - difficulty:
-  - ${difficulty ?? `"easy", "medium", or "hard"`}
+  - ${difficulty === "random" ? `"easy", "medium", or "hard"` : difficulty}
 
 EXAMPLE OUTPUT FORMAT:
 Return ONLY valid JSON:

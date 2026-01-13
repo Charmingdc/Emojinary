@@ -1,5 +1,9 @@
+import { useState } from "react";
+
 import useSound from "@/hooks/useSound";
+
 import NavButton from "@/components/ui/NavButton";
+import DifficultySelectionModal from "@/components/DifficultySelectionModal";
 
 interface Route {
   text: string;
@@ -14,6 +18,8 @@ const routes: Route[] = [
 
 const WelcomeScreen = () => {
   const { isSoundOn, toggleSound } = useSound();
+  const [isDifficultyModalOpen, setIsDifficultyModalOpen] =
+    useState<boolean>(false);
 
   return (
     <main className="w-full flex flex-col items-center gap-4 mt-14">
@@ -35,10 +41,20 @@ const WelcomeScreen = () => {
           </NavButton>
         ))}
 
+        <NavButton onClick={() => setIsDifficultyModalOpen(prev => !prev)}>
+          Difficulty
+        </NavButton>
+
         <NavButton onClick={toggleSound}>
           sound: <strong>{isSoundOn ? "on" : "off"}</strong>
         </NavButton>
       </div>
+
+      {isDifficultyModalOpen && (
+        <DifficultySelectionModal
+          setIsDifficultyModalOpen={setIsDifficultyModalOpen}
+        />
+      )}
     </main>
   );
 };

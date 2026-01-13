@@ -1,6 +1,8 @@
+import type { InternalDifficulty } from "@/types";
+
 export type GeneratePuzzlesParams = {
-  count?: number;
-  difficulty?: "easy" | "medium" | "hard";
+  count: number;
+  difficulty: InternalDifficulty;
 };
 
 const generatePuzzles = async (params: GeneratePuzzlesParams) => {
@@ -11,7 +13,6 @@ const generatePuzzles = async (params: GeneratePuzzlesParams) => {
     url.searchParams.append("difficulty", params.difficulty);
 
   const res = await fetch(url.toString());
-
   if (!res.ok) {
     throw new Error("Failed to generate puzzles");
   }

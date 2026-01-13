@@ -56,12 +56,12 @@ const generatePuzzles = async (req: VercelRequest, res: VercelResponse) => {
       .json({ success: false, message: "Method Not Allowed" });
   }
 
-  const count = Number(req.query.count ?? 8);
+  const count = Number(req.query.count);
   const difficulty = req.query.difficulty as
     | "easy"
     | "medium"
     | "hard"
-    | undefined;
+    | "random";
 
   const { primary, secondary, tertiary } = pickFlavors(flavors);
 
@@ -79,7 +79,8 @@ const generatePuzzles = async (req: VercelRequest, res: VercelResponse) => {
 
     return res.status(200).json({
       success: true,
-      data: puzzles
+      data: puzzles,
+      difficulty
     });
   } catch (error) {
     console.error("[AI] Generation failed:", error);
