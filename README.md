@@ -1,46 +1,43 @@
-# Emojinary API
+# Emojinary
 
 ## Overview
 
 ![Emojinary Playing Interface](/public/emojinary-screenshot-1.jpg)
 ![Emojinary Game End Interface](/public/emojinary-screenshot-2.jpg)
 
-A puzzle generation engine and interactive frontend built with TypeScript and Node.js. The system utilizes Large Language Models via the Groq API and LangChain to programmatically synthesize unique emoji-based word puzzles with varying difficulty levels.
+Emojinary is a high-performance puzzle application built with TypeScript and React, featuring a robust Node.js backend deployed as Vercel Serverless Functions. It leverages the Groq LPU™ Inference Engine via LangChain to dynamically generate context-aware emoji word puzzles across multiple difficulty tiers and thematic categories.
 
 ## Features
 
-- LangChain & Groq: Leverages the gpt-oss-120b model for high-creativity puzzle synthesis and automated hint generation.
-- Zod Validation: Implements strict schema enforcement for AI-generated JSON payloads to ensure runtime stability.
-- Serverless Architecture: Deployed via Vercel Functions for scalable, on-demand API execution.
-- React Query Integration: Optimized frontend state management for asynchronous data fetching and cache invalidation.
+- **AI-Driven Generation**: Utilizes Large Language Models to create unique, non-repetitive puzzles based on sixty distinct thematic "flavors."
+- **Serverless Architecture**: Implements scalable backend logic using Vercel Node.js functions for on-demand puzzle delivery.
+- **Strict Data Integrity**: Employs Zod for runtime schema validation of AI-generated content to ensure application stability.
+- **Custom Game Engine**: Features specialized React hooks for puzzle input logic, high-precision timers, and sound management.
+- **Responsive Neumorphic UI**: A modern, tactile interface built with Tailwind CSS and Framer Motion for high-quality user engagement.
 
 ## Getting Started
 
 ### Installation
 
-1. Clone the repository:
+1. **Clone the Repository**:
    ```bash
    git clone git@github.com:Charmingdc/Emojinary.git
    ```
-2. Navigate to the project directory:
-   ```bash
-   cd Emojinary
-   ```
-3. Install dependencies:
+2. **Install Dependencies**:
    ```bash
    npm install
    ```
-4. Start the development server:
+3. **Start Development Server**:
    ```bash
    npm run dev
    ```
 
 ### Environment Variables
 
-Create a `.env` file in the root directory and include the following:
+To enable AI puzzle generation, you must provide a Groq API key in your environment configuration.
 
 ```env
-GROQ_API_KEY=your_groq_api_key_here
+GROQ_API_KEY=gsk_your_actual_key_here
 ```
 
 ## API Documentation
@@ -54,12 +51,13 @@ GROQ_API_KEY=your_groq_api_key_here
 #### GET /generatePuzzles
 
 **Request**:
-Query Parameters:
+Query parameters used to define the quantity and complexity of the puzzles.
 
-- `count` (optional): Number of puzzles to generate. Default is 8.
-- `difficulty` (optional): Difficulty filter. Options: `easy`, `medium`, `hard`.
+- `count` (Optional): Integer (Default: 8). The number of puzzles to generate.
+- `difficulty` (Optional): "easy" | "medium" | "hard". Forces a specific difficulty level.
 
 **Response**:
+Returns a JSON object containing a success flag and an array of puzzle objects.
 
 ```json
 {
@@ -78,47 +76,46 @@ Query Parameters:
 
 **Errors**:
 
-- 405: Method Not Allowed
-- 500: Failed to generate puzzles (AI generation or validation error)
-
-## Technologies Used
-
-| Technology   | Purpose                                               |
-| ------------ | ----------------------------------------------------- |
-| TypeScript   | Type-safe development across frontend and backend     |
-| React 19     | Component-based UI architecture                       |
-| LangChain    | Orchestrating LLM interactions and prompt engineering |
-| Groq         | High-speed AI inference for puzzle generation         |
-| Tailwind CSS | Utility-first styling and neumorphic design patterns  |
-| Vite         | Frontend tooling and fast HMR                         |
-| Motion       | Fluid UI animations and transitions                   |
+- 405: Method Not Allowed (If request is not GET)
+- 500: Failed to generate puzzles (Internal AI or validation error)
 
 ## Usage
 
-The application provides two distinct gameplay experiences:
+Emojinary offers two primary modes of interaction. In **Classic Mode**, users solve a sequence of puzzles generated on-the-fly, earning points based on speed and accuracy. **Daily Mode** provides a curated, singular challenge shared by all users for that calendar day, tracked via local storage. Players can use the "Hint" system to reveal clues at the cost of potential points or "Skip" difficult puzzles in Classic mode.
 
-- **Classic Mode**: Fetches a randomized set of puzzles from the API. Users solve them sequentially with a per-puzzle timer and scoring system based on speed and hint usage.
-- **Daily Mode**: Fetches a specific, high-difficulty puzzle indexed by the current date, ensuring a shared experience for all players.
+## Technologies Used
 
-To run the project in a production-like environment, use `npm run build` followed by `npm run preview`.
+| Technology                                          | Purpose                                        |
+| :-------------------------------------------------- | :--------------------------------------------- |
+| [TypeScript](https://www.typescriptlang.org/)       | Type-safe application development              |
+| [React 19](https://react.dev/)                      | Component-based UI architecture                |
+| [LangChain](https://js.langchain.com/)              | AI orchestration and LLM integration           |
+| [Groq](https://groq.com/)                           | High-speed LPU inference for puzzle generation |
+| [TanStack Query](https://tanstack.com/query/latest) | Asynchronous state management and caching      |
+| [Tailwind CSS](https://tailwindcss.com/)            | Utility-first styling and Neumorphic design    |
+| [Vite](https://vitejs.dev/)                         | Frontend tooling and build optimization        |
+| [Zod](https://zod.dev/)                             | Type-safe schema validation                    |
 
 ## Contributing
 
-- Fork the repository and create your feature branch.
-- Ensure all TypeScript types are correctly defined and exported.
-- Follow the existing ESLint and Prettier configurations.
-- Submit a pull request with a detailed description of your changes.
+Contributions are welcome to enhance the puzzle generation algorithms or UI components.
+
+- 💡 Fork the repository and create your branch.
+- 🛠️ Ensure all TypeScript types are correctly defined.
+- 🧪 Verify that any API changes maintain the existing Zod schema integrity.
+- 🚀 Submit a Pull Request with a detailed description of changes.
 
 ## Author Info
 
 **Adebayo Muis**
 
 - GitHub: [Charmingdc](https://github.com/Charmingdc)
-- Twitter: [@Charmingdc01](https://x.com/Charmingdc01)
+- Twitter/X: [@Charmingdc01](https://x.com/Charmingdc01)
 
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
-![React](https://img.shields.io/badge/React-19-61DAFB)
-![Vercel](https://img.shields.io/badge/Vercel-Deployed-black)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Node.js](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
 [![Readme was generated by Dokugen](https://img.shields.io/badge/Readme%20was%20generated%20by-Dokugen-brightgreen)](https://www.npmjs.com/package/dokugen)
