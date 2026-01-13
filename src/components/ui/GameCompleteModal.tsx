@@ -4,6 +4,7 @@ import { useWindowSize } from "react-use";
 import Confetti from "react-confetti";
 import NavButton from "./NavButton";
 
+import usePuzzlesDifficulty from "@/hooks/usePuzzlesDifficulty";
 import {
   generateShareableResult,
   getResultMessage,
@@ -27,6 +28,7 @@ const GameCompleteModal = ({
   handleGoHome
 }: Props) => {
   const { width, height } = useWindowSize();
+  const { difficulty } = usePuzzlesDifficulty();
 
   const puzzleArray = Array.isArray(puzzles) ? puzzles : [puzzles];
   const solvedCount = puzzleArray.filter(
@@ -52,7 +54,8 @@ const GameCompleteModal = ({
       score,
       bestScore,
       solvedCount,
-      totalPuzzles
+      totalPuzzles,
+      difficulty
     });
 
     if (navigator.share) {

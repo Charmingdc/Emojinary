@@ -1,9 +1,12 @@
+import type { InternalDifficulty } from "@/types";
+
 interface ShareableResult {
   mode: "classic" | "daily";
   score: number;
   bestScore: number | undefined;
   solvedCount: number;
   totalPuzzles: number;
+  difficulty: InternalDifficulty;
 }
 
 const generateShareableResult = ({
@@ -11,18 +14,21 @@ const generateShareableResult = ({
   score,
   bestScore,
   solvedCount,
-  totalPuzzles
+  totalPuzzles,
+  difficulty
 }: ShareableResult): string => {
   return `
   🤹 EMOJINARY - ${mode.toUpperCase()} MODE 🤹
    
   ⚡ SCORE: ${score}
+  ⚔️ DIFFICULTY: ${difficulty.toUpperCase()}${
+    difficulty === "hard" ? " 🔥" : ""
+  }
   🧩 SOLVES: ${solvedCount} / ${totalPuzzles}
   🏆 BESTSCORE: ${bestScore ?? score}
   
  #Emojis #Puzzles #BrainTeaser
- 
-  Can you beat this stats? Play now at 👇🏼
+ Can you beat this stats? Play now at 👇🏼
   `;
 };
 
