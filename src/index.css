@@ -38,3 +38,23 @@
     @apply font-luckiest;
   }
 }
+
+@layer components {
+  .neumorphic-toast {
+    background: rgb(var(--background));
+    color: rgb(var(--foreground));
+    border: 1px solid rgb(var(--border));
+    box-shadow: 4px 4px 0px rgb(var(--border));
+    border-radius: 12px;
+  }
+
+  .neumorphic-toast[data-type="success"] {
+    border-color: rgb(var(--primary));
+    box-shadow: 4px 4px 0px rgb(var(--primary));
+  }
+
+  .neumorphic-toast[data-type="error"] {
+    border-color: rgb(var(--secondary));
+    box-shadow: 4px 4px 0px rgb(var(--secondary));
+  }
+}

@@ -1,7 +1,14 @@
 import { Trophy, X, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 import { useWindowSize } from "react-use";
 import Confetti from "react-confetti";
 import NavButton from "./NavButton";
+
+import {
+  generateShareableResult,
+  getResultMessage,
+  getTrophyColor
+} from "@/utils";
 import type { GamePuzzle } from "@/types";
 
 interface Props {
@@ -11,26 +18,6 @@ interface Props {
   handleReplay?: () => void;
   handleGoHome: () => void;
 }
-
-const getResultMessage = (solved: number, total: number) =>
-  solved === total
-    ? "Wonderful!"
-    : solved === total - 1
-    ? "Excellent!"
-    : solved >= Math.ceil(total * 0.6)
-    ? "Great Work!"
-    : solved >= Math.ceil(total * 0.4)
-    ? "Good Job!"
-    : solved > 0
-    ? "Nice Try!"
-    : "Try Again!";
-
-const getTrophyColor = (solved: number, total: number) =>
-  solved === total
-    ? "text-yellow-400"
-    : solved >= total / 2
-    ? "text-accent"
-    : "text-gray-400";
 
 const GameCompleteModal = ({
   score,
@@ -58,6 +45,35 @@ const GameCompleteModal = ({
   const allSolved = reviewPuzzles.length === 0;
   const resultMessage = getResultMessage(solvedCount, totalPuzzles);
   const trophyColor = getTrophyColor(solvedCount, totalPuzzles);
+
+  const handleShareResult = async () => {
+    const text = generateShareableResult({
+      mode: isSinglePuzzle ? "daily" : "classic",
+      score,
+      bestScore,
+      solvedCount,
+      totalPuzzles
+    });
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Emojinary Result",
+          text,
+          url: "https://funemojinary.vercel.app"
+        });
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          toast.error(`Share cancelled: ${err.message}`);
+        } else {
+          toast.error("Share cancelled");
+        }
+      }
+    } else {
+      await navigator.clipboard.writeText(text);
+      toast.success("Result copied to clipboard!");
+    }
+  };
 
   return (
     <section className="fixed top-0 left-0 bottom-0 w-screen h-screen bg-black/60 backdrop-blur-xl z-50 flex flex-col items-center justify-start p-6 overflow-hidden">
@@ -171,12 +187,21 @@ const GameCompleteModal = ({
             Replay
           </NavButton>
         )}
+
         <NavButton
           wrapperClassName="w-36"
           className="py-3 px-6"
           onClick={handleGoHome}
         >
           Go Home
+        </NavButton>
+
+        <NavButton
+          wrapperClassName="w-36"
+          className="py-3 px-6"
+          onClick={handleShareResult}
+        >
+          Share Result
         </NavButton>
       </div>
 
