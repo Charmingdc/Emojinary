@@ -34,20 +34,38 @@ const WelcomeScreen = () => {
         Puzzles!
       </h1>
 
-      <div className="w-full flex flex-col items-center gap-2 mt-16">
-        {routes.map(route => (
-          <NavButton key={route.path} to={route.path}>
-            {route.text}
+      <div className="w-full flex flex-col items-center gap-8 mt-24">
+        <div
+          arial-label="Navigations"
+          className="relative w-full flex items-center justify-center flex-wrap gap-x-3 gap-y-4 p-4 pt-8 border rounded-xl"
+        >
+          <span className="absolute -top-5 left-4 bg-background p-2 z-20">
+            Navigations:
+          </span>
+
+          {routes.map(route => (
+            <NavButton key={route.path} to={route.path}>
+              {route.text}
+            </NavButton>
+          ))}
+        </div>
+
+        <div
+          arial-label="Game Settings"
+          className="relative w-full flex items-center justify-center flex-wrap gap-x-3 gap-y-4 p-4 pt-8 border rounded-xl"
+        >
+          <span className="absolute -top-5 left-4 bg-background p-2 z-20">
+            Game Settings:
+          </span>
+
+          <NavButton onClick={() => setIsDifficultyModalOpen(prev => !prev)}>
+            Difficulty
           </NavButton>
-        ))}
 
-        <NavButton onClick={() => setIsDifficultyModalOpen(prev => !prev)}>
-          Difficulty
-        </NavButton>
-
-        <NavButton onClick={toggleSound}>
-          sound: <strong>{isSoundOn ? "on" : "off"}</strong>
-        </NavButton>
+          <NavButton onClick={toggleSound}>
+            sound: <strong>{isSoundOn ? "on" : "off"}</strong>
+          </NavButton>
+        </div>
       </div>
 
       {isDifficultyModalOpen && (
