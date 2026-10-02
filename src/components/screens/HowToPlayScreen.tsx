@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
+import { GameButton } from "@/components/ui/GamePrimitives";
 
 const container = {
   hidden: { opacity: 0, y: 12 },
@@ -7,14 +8,14 @@ const container = {
     opacity: 1,
     y: 0,
     transition: {
-      staggerChildren: 0.08
-    }
-  }
+      staggerChildren: 0.08,
+    },
+  },
 };
 
 const item = {
   hidden: { opacity: 0, y: 8 },
-  visible: { opacity: 1, y: 0 }
+  visible: { opacity: 1, y: 0 },
 };
 
 const HowToPlayScreen = () => {
@@ -22,7 +23,7 @@ const HowToPlayScreen = () => {
 
   return (
     <motion.div
-      className="min-h-screen px-4 py-6 space-y-10 text-sm"
+      className="mx-auto min-h-screen max-w-3xl space-y-5 px-4 py-6 text-sm"
       variants={container}
       initial="hidden"
       animate="visible"
@@ -30,16 +31,22 @@ const HowToPlayScreen = () => {
       {/* Header */}
       <motion.div
         variants={item}
-        className="flex items-center justify-between border-b"
+        className="flex items-center justify-between border-b border-outline pb-3"
       >
         <h1 className="text-2xl font-semibold">How to Play</h1>
-        <button onClick={() => navigate(-1)} className="opacity-70 underline">
+        <button
+          onClick={() => navigate(-1)}
+          className="min-h-[52px] rounded-[10px] border-[3px] border-outline bg-surface px-4 font-bold uppercase shadow-[0_4px_0_rgb(var(--surface-edge))] transition-transform duration-[80ms] active:translate-y-1 active:shadow-[inset_0_3px_0_rgb(var(--tile-edge)),inset_0_4px_8px_rgba(39,35,31,0.16)]"
+        >
           Back
         </button>
       </motion.div>
 
       {/* Goal */}
-      <motion.section variants={item} className="space-y-2">
+      <motion.section
+        variants={item}
+        className="rounded-[14px] border-[3px] border-outline bg-panel p-4 text-foreground shadow-[0_4px_0_rgb(var(--panel-edge))] space-y-2"
+      >
         <h2 className="text-lg font-semibold">🧩 The Goal</h2>
         <p className="opacity-80">
           Guess the <strong>hidden word</strong> using emoji clues. Each puzzle
@@ -48,7 +55,10 @@ const HowToPlayScreen = () => {
       </motion.section>
 
       {/* Emojis */}
-      <motion.section variants={item} className="space-y-2">
+      <motion.section
+        variants={item}
+        className="rounded-[14px] border-[3px] border-outline bg-panel p-4 text-foreground shadow-[0_4px_0_rgb(var(--panel-edge))] space-y-2"
+      >
         <h2 className="text-lg font-semibold">🔍 Read the Emojis</h2>
         <p className="opacity-80">
           Emojis describe an idea or concept. Think about what they mean{" "}
@@ -57,7 +67,10 @@ const HowToPlayScreen = () => {
       </motion.section>
 
       {/* Letters */}
-      <motion.section variants={item} className="space-y-2">
+      <motion.section
+        variants={item}
+        className="rounded-[14px] border-[3px] border-outline bg-panel p-4 text-foreground shadow-[0_4px_0_rgb(var(--panel-edge))] space-y-2"
+      >
         <h2 className="text-lg font-semibold">🔤 Build the Word</h2>
         <ul className="list-disc pl-5 opacity-80 space-y-1">
           <li>Select letters from the pool</li>
@@ -68,13 +81,19 @@ const HowToPlayScreen = () => {
       </motion.section>
 
       {/* Timer */}
-      <motion.section variants={item} className="space-y-2">
+      <motion.section
+        variants={item}
+        className="rounded-[14px] border-[3px] border-outline bg-panel p-4 text-foreground shadow-[0_4px_0_rgb(var(--panel-edge))] space-y-2"
+      >
         <h2 className="text-lg font-semibold">⏱️ Time Matters</h2>
         <p className="opacity-80">Solving faster earns more points.</p>
       </motion.section>
 
       {/* Hints */}
-      <motion.section variants={item} className="space-y-2">
+      <motion.section
+        variants={item}
+        className="rounded-[14px] border-[3px] border-outline bg-panel p-4 text-foreground shadow-[0_4px_0_rgb(var(--panel-edge))] space-y-2"
+      >
         <h2 className="text-lg font-semibold">💡 Hints</h2>
         <p className="opacity-80">
           Hints help — but <strong>reduce your score</strong>.
@@ -82,7 +101,10 @@ const HowToPlayScreen = () => {
       </motion.section>
 
       {/* Scoring */}
-      <motion.section variants={item} className="space-y-2">
+      <motion.section
+        variants={item}
+        className="rounded-[14px] border-[3px] border-outline bg-panel p-4 text-foreground shadow-[0_4px_0_rgb(var(--panel-edge))] space-y-2"
+      >
         <h2 className="text-lg font-semibold">⭐ Scoring</h2>
         <ul className="list-disc pl-5 opacity-80 space-y-1">
           <li>More time left = more points</li>
@@ -104,14 +126,11 @@ const HowToPlayScreen = () => {
       </motion.section>
 
       {/* CTA */}
-      <motion.button
-        variants={item}
-        whileTap={{ scale: 0.96 }}
-        onClick={() => navigate("/play")}
-        className="w-full mt-6 py-4 rounded-xl bg-card text-card-foreground font-semibold shadow-neumorphic"
-      >
-        Start Playing!
-      </motion.button>
+      <motion.div variants={item}>
+        <GameButton onClick={() => navigate("/play")} className="mt-2 w-full">
+          Start Playing!
+        </GameButton>
+      </motion.div>
     </motion.div>
   );
 };

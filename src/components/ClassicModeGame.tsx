@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { LayoutGroup } from "motion/react";
 import type { Dispatch, SetStateAction } from "react";
 
 import StatsBar from "@/components/ui/StatsBar";
@@ -8,6 +9,7 @@ import AnswerSlots from "@/components/ui/AnswerSlots";
 import LetterPool from "@/components/ui/LetterPool";
 import CorrectAnswerBanner from "@/components/ui/CorrectAnswerBanner";
 import GameCompleteModal from "@/components/ui/GameCompleteModal";
+import type { LetterToken } from "@/components/ui/GamePrimitives";
 
 import { shuffleArray, calculatePoints, vibrate } from "@/utils";
 import usePerPuzzleTimer from "@/hooks/usePerPuzzleTimer";
@@ -33,10 +35,11 @@ const ClassicModeGame = ({
   bestScore,
   updateBestScore,
   newGame,
-  navigate
+  navigate,
 }: ClassicModeGameProps) => {
   const [currentPuzzleIdx, setCurrentPuzzleIdx] = useState(0);
-  const [letterPool, setLetterPool] = useState<string[]>([]);
+  const [letterPool, setLetterPool] = useState<LetterToken[]>([]);
+  const [slotIds, setSlotIds] = useState<Array<string | null>>([]);
   const [points, setPoints] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [usedHint, setUsedHint] = useState(false);
@@ -52,7 +55,7 @@ const ClassicModeGame = ({
     reset: resetSlots,
     insert: handleLetterClick,
     removeAt: handleSlotClick,
-    isComplete
+    isComplete,
   } = usePuzzleInput(currentPuzzle.answer.length);
 
   const handleTimerExpire = () => goToNextPuzzle();
@@ -60,11 +63,11 @@ const ClassicModeGame = ({
   const {
     seconds: remainingTime,
     formatTime,
-    reset
+    reset,
   } = usePerPuzzleTimer({
     difficulty,
     trigger: currentPuzzleIdx,
-    onExpire: handleTimerExpire
+    onExpire: handleTimerExpire,
   });
 
   const goToNextPuzzle = () => {
@@ -73,9 +76,8 @@ const ClassicModeGame = ({
       return;
     }
 
-    setCurrentPuzzleIdx(prev => (prev < puzzleCount - 1 ? prev + 1 : prev));
+    setCurrentPuzzleIdx((prev) => (prev < puzzleCount - 1 ? prev + 1 : prev));
     resetSlots();
-    setLetterPool(shuffleArray(currentPuzzle.letters));
     setShowHint(false);
     setUsedHint(false);
     setAnswerState("neutral");
@@ -85,15 +87,17 @@ const ClassicModeGame = ({
     const earned = calculatePoints(
       currentPuzzle.difficulty,
       remainingTime,
-      usedHint
+      usedHint,
     );
 
-    setPoints(prev => prev + earned);
+    setPoints((prev) => prev + earned);
 
-    setPuzzles(prev =>
+    setPuzzles((prev) =>
       prev.map((puzzle, idx) =>
-        idx === currentPuzzleIdx ? { ...puzzle, puzzleState: "solved" } : puzzle
-      )
+        idx === currentPuzzleIdx
+          ? { ...puzzle, puzzleState: "solved" }
+          : puzzle,
+      ),
     );
 
     setAnswerState("correct");
@@ -108,10 +112,19 @@ const ClassicModeGame = ({
   };
 
   const handleLetterPick = (letter: string, index: number) => {
+    const token = letterPool[index];
+    const targetSlot = selectedLetters.indexOf("");
+    if (!token || targetSlot === -1) return;
+
     const inserted = handleLetterClick(letter);
     if (!inserted) return;
 
-    setLetterPool(prev => {
+    setSlotIds((prev) => {
+      const next = [...prev];
+      next[targetSlot] = token.id;
+      return next;
+    });
+    setLetterPool((prev) => {
       const next = [...prev];
       next.splice(index, 1);
       return next;
@@ -122,14 +135,31 @@ const ClassicModeGame = ({
     const removed = handleSlotClick(slotIdx);
     if (!removed) return;
 
-    setLetterPool(prev => shuffleArray([...prev, removed]));
+    const tokenId =
+      slotIds[slotIdx] ?? `${currentPuzzleIdx}-${slotIdx}-${Date.now()}`;
+    setSlotIds((prev) => {
+      const next = [...prev];
+      next[slotIdx] = null;
+      return next;
+    });
+    setLetterPool((prev) =>
+      shuffleArray([...prev, { id: tokenId, letter: removed }]),
+    );
   };
 
   useEffect(() => {
     resetSlots();
-    setLetterPool(shuffleArray(currentPuzzle.letters));
+    setLetterPool(
+      shuffleArray(
+        currentPuzzle.letters.map((letter, index) => ({
+          id: `${currentPuzzleIdx}-${currentPuzzle.answer}-${index}`,
+          letter,
+        })),
+      ),
+    );
+    setSlotIds(Array(currentPuzzle.answer.length).fill(null));
     setAnswerState("neutral");
-  }, [currentPuzzle]);
+  }, [currentPuzzle, currentPuzzleIdx]);
 
   useEffect(() => {
     if (!isComplete) setAnswerState("neutral");
@@ -154,66 +184,70 @@ const ClassicModeGame = ({
   }, [gameCompleted, points, bestScore]);
 
   return (
-    <main className="w-full flex flex-col items-center gap-3 p-4 pb-12">
-      <h2 className="self-start -mt-4">🕹️ Classic Mode</h2>
+    <LayoutGroup id="classic-puzzle-letters">
+      <main className="w-full flex flex-col items-center gap-3 p-4 pb-12">
+        <h2 className="self-start -mt-4">🕹️ Classic Mode</h2>
 
-      <StatsBar
-        stats={{
-          currentPuzzleIdx: currentPuzzleIdx + 1,
-          puzzleCount,
-          points,
-          time: formatTime(),
-          difficulty
-        }}
-      />
+        <StatsBar
+          stats={{
+            currentPuzzleIdx: currentPuzzleIdx + 1,
+            puzzleCount,
+            points,
+            time: formatTime(),
+            difficulty,
+          }}
+        />
 
-      <div className="w-full flex flex-col items-center gap-3 mt-6">
-        <h3 className="text-lg">Can you guess the word?</h3>
+        <div className="w-full flex flex-col items-center gap-3 mt-6">
+          <h3 className="text-lg">Can you guess the word?</h3>
 
-        <div className="w-full flex items-center justify-center gap-3">
-          <GameControls
-            {...{
-              showHint,
-              setShowHint,
-              setUsedHint,
-              currentPuzzleIdx,
-              setCurrentPuzzleIdx,
-              setPuzzles,
-              setGameCompleted,
-              puzzleCount,
-              resetTimer: reset
-            }}
-          />
-          <PuzzleBox puzzle={currentPuzzle} />
+          <div className="w-full flex items-center justify-center gap-3">
+            <GameControls
+              {...{
+                showHint,
+                setShowHint,
+                setUsedHint,
+                currentPuzzleIdx,
+                setCurrentPuzzleIdx,
+                setPuzzles,
+                setGameCompleted,
+                puzzleCount,
+                resetTimer: reset,
+              }}
+            />
+            <PuzzleBox puzzle={currentPuzzle} />
+          </div>
+
+          {showHint && (
+            <p className="mt-2">
+              <strong className="text-primary-ink">Hint:</strong>{" "}
+              {currentPuzzle.hint}
+            </p>
+          )}
         </div>
 
-        {showHint && (
-          <p className="mt-2">
-            <strong className="text-primary">Hint:</strong> {currentPuzzle.hint}
-          </p>
-        )}
-      </div>
-
-      <AnswerSlots
-        slots={selectedLetters}
-        onSlotClick={handleLetterRemove}
-        answerState={answerState}
-      />
-
-      <LetterPool letters={letterPool} onLetterClick={handleLetterPick} />
-
-      {answerState === "correct" && <CorrectAnswerBanner />}
-
-      {gameCompleted && (
-        <GameCompleteModal
-          score={points}
-          bestScore={bestScore}
-          puzzles={puzzles}
-          handleReplay={newGame}
-          handleGoHome={() => navigate("/")}
+        <AnswerSlots
+          slots={selectedLetters}
+          slotIds={slotIds}
+          onSlotClick={handleLetterRemove}
+          answerState={answerState}
         />
-      )}
-    </main>
+
+        <LetterPool letters={letterPool} onLetterClick={handleLetterPick} />
+
+        {answerState === "correct" && <CorrectAnswerBanner />}
+
+        {gameCompleted && (
+          <GameCompleteModal
+            score={points}
+            bestScore={bestScore}
+            puzzles={puzzles}
+            handleReplay={newGame}
+            handleGoHome={() => navigate("/")}
+          />
+        )}
+      </main>
+    </LayoutGroup>
   );
 };
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { LayoutGroup } from "motion/react";
 
 import StatsBar from "@/components/ui/StatsBar";
 import GameControls from "@/components/GameControls";
@@ -7,6 +8,7 @@ import AnswerSlots from "@/components/ui/AnswerSlots";
 import LetterPool from "@/components/ui/LetterPool";
 import CorrectAnswerBanner from "@/components/ui/CorrectAnswerBanner";
 import GameCompleteModal from "@/components/ui/GameCompleteModal";
+import type { LetterToken } from "@/components/ui/GamePrimitives";
 
 import { shuffleArray, calculatePoints, vibrate } from "@/utils";
 import usePerPuzzleTimer from "@/hooks/usePerPuzzleTimer";
@@ -27,7 +29,10 @@ const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
   const { markPlayedToday } = useHasPlayedToday();
   const difficulty = puzzle.difficulty;
 
-  const [letterPool, setLetterPool] = useState<string[]>([]);
+  const [letterPool, setLetterPool] = useState<LetterToken[]>([]);
+  const [slotIds, setSlotIds] = useState<Array<string | null>>(
+    Array(puzzle.answer.length).fill(null),
+  );
   const [points, setPoints] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [usedHint, setUsedHint] = useState(false);
@@ -39,7 +44,7 @@ const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
     reset: resetSlots,
     insert: handleLetterClick,
     removeAt: handleSlotClick,
-    isComplete
+    isComplete,
   } = usePuzzleInput(puzzle.answer.length);
 
   const handleTimerExpire = () => {
@@ -51,11 +56,11 @@ const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
   const {
     seconds: remainingTime,
     formatTime,
-    reset: resetTimer
+    reset: resetTimer,
   } = usePerPuzzleTimer({
     difficulty,
     trigger: 0,
-    onExpire: handleTimerExpire
+    onExpire: handleTimerExpire,
   });
 
   const setPuzzleState = (state: "solved" | "skipped" | "unsolved") => {
@@ -76,10 +81,19 @@ const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
   };
 
   const handleLetterPickWrapper = (letter: string, index: number) => {
+    const token = letterPool[index];
+    const targetSlot = selectedLetters.indexOf("");
+    if (!token || targetSlot === -1) return;
+
     const inserted = handleLetterClick(letter);
     if (!inserted) return;
 
-    setLetterPool(prev => {
+    setSlotIds((prev) => {
+      const next = [...prev];
+      next[targetSlot] = token.id;
+      return next;
+    });
+    setLetterPool((prev) => {
       const next = [...prev];
       next.splice(index, 1);
       return next;
@@ -90,12 +104,28 @@ const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
     const removed = handleSlotClick(slotIdx);
     if (!removed) return;
 
-    setLetterPool(prev => shuffleArray([...prev, removed]));
+    const tokenId = slotIds[slotIdx] ?? `daily-${slotIdx}-${Date.now()}`;
+    setSlotIds((prev) => {
+      const next = [...prev];
+      next[slotIdx] = null;
+      return next;
+    });
+    setLetterPool((prev) =>
+      shuffleArray([...prev, { id: tokenId, letter: removed }]),
+    );
   };
 
   useEffect(() => {
     resetSlots();
-    setLetterPool(shuffleArray(puzzle.letters));
+    setLetterPool(
+      shuffleArray(
+        puzzle.letters.map((letter, index) => ({
+          id: `daily-${puzzle.answer}-${index}`,
+          letter,
+        })),
+      ),
+    );
+    setSlotIds(Array(puzzle.answer.length).fill(null));
     setAnswerState("neutral");
   }, [puzzle]);
 
@@ -112,60 +142,63 @@ const DailyModeGame = ({ puzzle, play, navigate }: DailyModeGameProps) => {
   }, [isComplete]);
 
   return (
-    <main className="w-full flex flex-col items-center gap-3 p-4 pb-12">
-      <h2 className="self-start -mt-4">🕹️ Daily Mode</h2>
+    <LayoutGroup id="daily-puzzle-letters">
+      <main className="w-full flex flex-col items-center gap-3 p-4 pb-12">
+        <h2 className="self-start -mt-4">🕹️ Daily Mode</h2>
 
-      <StatsBar
-        stats={{
-          currentPuzzleIdx: 1,
-          puzzleCount: 1,
-          points,
-          time: formatTime(),
-          difficulty
-        }}
-      />
+        <StatsBar
+          stats={{
+            currentPuzzleIdx: 1,
+            puzzleCount: 1,
+            points,
+            time: formatTime(),
+            difficulty,
+          }}
+        />
 
-      <div className="w-full flex flex-col items-center gap-3 mt-6">
-        <h3 className="text-lg">Can you guess the word?</h3>
+        <div className="w-full flex flex-col items-center gap-3 mt-6">
+          <h3 className="text-lg">Can you guess the word?</h3>
 
-        <div className="w-full flex items-center justify-center gap-3">
-          <GameControls
-            showHint={showHint}
-            setShowHint={setShowHint}
-            setUsedHint={setUsedHint}
-            resetTimer={resetTimer}
-          />
-          <PuzzleBox puzzle={puzzle} />
+          <div className="w-full flex items-center justify-center gap-3">
+            <GameControls
+              showHint={showHint}
+              setShowHint={setShowHint}
+              setUsedHint={setUsedHint}
+              resetTimer={resetTimer}
+            />
+            <PuzzleBox puzzle={puzzle} />
+          </div>
+
+          {showHint && (
+            <p className="mt-2">
+              <strong className="text-primary-ink">Hint:</strong> {puzzle.hint}
+            </p>
+          )}
         </div>
 
-        {showHint && (
-          <p className="mt-2">
-            <strong className="text-primary">Hint:</strong> {puzzle.hint}
-          </p>
-        )}
-      </div>
-
-      <AnswerSlots
-        slots={selectedLetters}
-        onSlotClick={handleLetterRemoveWrapper}
-        answerState={answerState}
-      />
-
-      <LetterPool
-        letters={letterPool}
-        onLetterClick={handleLetterPickWrapper}
-      />
-
-      {answerState === "correct" && <CorrectAnswerBanner />}
-
-      {gameCompleted && (
-        <GameCompleteModal
-          score={points}
-          puzzles={puzzle}
-          handleGoHome={() => navigate("/")}
+        <AnswerSlots
+          slots={selectedLetters}
+          slotIds={slotIds}
+          onSlotClick={handleLetterRemoveWrapper}
+          answerState={answerState}
         />
-      )}
-    </main>
+
+        <LetterPool
+          letters={letterPool}
+          onLetterClick={handleLetterPickWrapper}
+        />
+
+        {answerState === "correct" && <CorrectAnswerBanner />}
+
+        {gameCompleted && (
+          <GameCompleteModal
+            score={points}
+            puzzles={puzzle}
+            handleGoHome={() => navigate("/")}
+          />
+        )}
+      </main>
+    </LayoutGroup>
   );
 };
 

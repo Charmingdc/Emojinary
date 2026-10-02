@@ -32,10 +32,12 @@ A Node.js backend hosted via Vercel Serverless Functions that interfaces with th
    ```bash
    npm install
    ```
-3. Run the development server:
+3. Add your Groq key to `.env` as shown below, then run the app and its API functions with Vercel CLI:
    ```bash
-   npm run dev
+   npx vercel dev
    ```
+
+`npm run dev` starts Vite only. Its `/api` requests are proxied to `localhost:3000`, so puzzle generation fails unless the Vercel Functions development server is running there.
 
 ### Environment Variables
 

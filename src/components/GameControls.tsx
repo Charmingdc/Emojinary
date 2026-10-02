@@ -28,7 +28,7 @@ const GameControls: React.FC<GameControlsProps> = ({
   setPuzzles,
   setCurrentPuzzleIdx,
   setGameCompleted,
-  puzzleCount
+  puzzleCount,
 }) => {
   const { isSoundOn, toggleSound } = useSound();
 
@@ -45,23 +45,25 @@ const GameControls: React.FC<GameControlsProps> = ({
     setUsedHint(true);
 
     if (isClassicMode) {
-      setPuzzles(prev =>
+      setPuzzles((prev) =>
         prev.map((p, idx) =>
-          idx === currentPuzzleIdx && !p.hintUsed ? { ...p, hintUsed: true } : p
-        )
+          idx === currentPuzzleIdx && !p.hintUsed
+            ? { ...p, hintUsed: true }
+            : p,
+        ),
       );
     }
 
-    setShowHint(prev => !prev);
+    setShowHint((prev) => !prev);
   };
 
   const handleSkipClick = () => {
     if (!isClassicMode) return;
 
-    setPuzzles(prev =>
+    setPuzzles((prev) =>
       prev.map((p, idx) =>
-        idx === currentPuzzleIdx ? { ...p, puzzleState: "skipped" } : p
-      )
+        idx === currentPuzzleIdx ? { ...p, puzzleState: "skipped" } : p,
+      ),
     );
 
     setShowHint(false);
@@ -73,7 +75,7 @@ const GameControls: React.FC<GameControlsProps> = ({
       return;
     }
 
-    setCurrentPuzzleIdx(prev => prev + 1);
+    setCurrentPuzzleIdx((prev) => prev + 1);
   };
 
   return (
@@ -81,29 +83,30 @@ const GameControls: React.FC<GameControlsProps> = ({
       {/* Sound */}
       <ControlButton onClick={toggleSound}>
         {isSoundOn ? (
-          <Volume2 size={24} className="text-primary" />
+          <Volume2 size={24} className="text-primary-ink" />
         ) : (
-          <VolumeX size={24} className="text-secondary" />
+          <VolumeX size={24} className="text-muted" />
         )}
       </ControlButton>
 
       {/* Hint */}
-      <ControlButton onClick={handleHintClick}>
+      <ControlButton
+        onClick={handleHintClick}
+        aria-label={showHint ? "Hide hint" : "Show hint"}
+        aria-pressed={showHint}
+      >
         <Lightbulb
           size={24}
-          className={showHint ? "text-accent" : "text-primary"}
+          className={
+            showHint ? "fill-primary/20 text-primary-ink" : "text-primary-ink"
+          }
         />
       </ControlButton>
 
       {/* Skip (Classic only) */}
       {isClassicMode && (
         <ControlButton onClick={handleSkipClick}>
-          <SkipForward
-            size={24}
-            className={
-              isLast ? "text-secondary" : "text-primary active:text-accent"
-            }
-          />
+          <SkipForward size={24} className="text-primary-ink" />
         </ControlButton>
       )}
     </div>

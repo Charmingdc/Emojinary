@@ -1,5 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Luckiest+Guy&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -7,15 +6,36 @@
 
 @layer base {
   :root {
-    --background: 249 245 233;
-    --foreground: 40 37 33;
-    --border: 230 225 214;
-    --card: 40 37 33;
-    --card-foreground: 250 238 226;
-    --primary: 78 205 196;
-    --secondary: 255 107 107;
+    color-scheme: light;
+    --background: 250 247 237;
+    --foreground: 39 35 31;
+    --border: 228 222 210;
+    --outline: 255 255 255;
+    --panel: 255 253 247;
+    --panel-edge: 58 52 45;
+    --surface: 255 246 222;
+    --surface-edge: 211 205 192;
+    --tile-face: 255 253 246;
+    --tile-ink: 39 35 31;
+    --tile-edge: 211 205 192;
+    --slot: 43 39 35;
+    --slot-edge: 20 18 16;
+    --muted: 105 98 88;
+    --primary: 255 202 43;
+    --primary-edge: 211 205 192;
+    --primary-ink: 39 35 31;
+    --wrong: 224 67 81;
+    --wrong-edge: 145 31 43;
+    --secondary: 105 98 88;
     --success: 29 209 161;
-    --accent: 255 217 61;
+    --success-edge: 12 119 89;
+    --success-ink: 8 101 75;
+    --accent: 255 202 43;
+    --card: 43 39 35;
+    --card-foreground: 255 250 239;
+    --game-panel: 43 39 35;
+    --game-panel-edge: 20 18 16;
+    --game-panel-text: 255 250 239;
   }
 
   *,
@@ -29,32 +49,52 @@
   }
 
   body {
-    @apply w-screen bg-background text-foreground font-fredoka text-[0.9rem];
+    @apply min-h-screen w-full bg-background text-foreground font-fredoka text-base antialiased selection:bg-primary selection:text-foreground;
   }
 
   h1,
   h2,
   h3 {
-    @apply font-luckiest;
+    @apply font-fredoka font-bold;
+  }
+
+  h1 {
+    text-wrap: balance;
+  }
+
+  button,
+  input {
+    font: inherit;
   }
 }
 
 @layer components {
   .neumorphic-toast {
-    background: rgb(var(--background));
+    background: rgb(var(--panel));
     color: rgb(var(--foreground));
-    border: 1px solid rgb(var(--border));
-    box-shadow: 4px 4px 0px rgb(var(--border));
-    border-radius: 12px;
+    border: 3px solid rgb(var(--outline));
+    box-shadow: 0 4px 0 rgb(var(--panel-edge));
+    border-radius: 10px;
   }
 
   .neumorphic-toast[data-type="success"] {
-    border-color: rgb(var(--primary));
-    box-shadow: 4px 4px 0px rgb(var(--primary));
+    border-color: rgb(var(--outline));
+    box-shadow: 0 4px 0 rgb(var(--success-edge));
   }
 
   .neumorphic-toast[data-type="error"] {
-    border-color: rgb(var(--secondary));
-    box-shadow: 4px 4px 0px rgb(var(--secondary));
+    border-color: rgb(var(--outline));
+    box-shadow: 0 4px 0 rgb(var(--wrong-edge));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

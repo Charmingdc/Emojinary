@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { X } from "lucide-react";
+import { GameButton, IconButton, Panel } from "@/components/ui/GamePrimitives";
 
 import usePuzzlesDifficulty from "@/hooks/usePuzzlesDifficulty";
 import useGameAudio from "@/hooks/useGameAudio";
@@ -15,7 +16,7 @@ type ModalProps = {
 const options: InternalDifficulty[] = ["easy", "medium", "hard", "random"];
 
 const DifficultySelectionModal: React.FC<ModalProps> = ({
-  setIsDifficultyModalOpen
+  setIsDifficultyModalOpen,
 }) => {
   const { play } = useGameAudio();
   const { difficulty, updateDifficulty } = usePuzzlesDifficulty();
@@ -30,7 +31,7 @@ const DifficultySelectionModal: React.FC<ModalProps> = ({
     toast.success(
       `Difficulty level updated successfully: ${
         selectedDifficulty.charAt(0).toUpperCase() + selectedDifficulty.slice(1)
-      }`
+      }`,
     );
 
     setCurrDiff(selectedDifficulty);
@@ -41,38 +42,35 @@ const DifficultySelectionModal: React.FC<ModalProps> = ({
   return (
     <section
       aria-label="Select Game Difficulty"
-      className="fixed top-0 bottom-0 w-screen h-screen bg-white/10 backdrop-blur-sm flex items-center justify-center z-50"
+      className="fixed inset-0 z-50 flex h-svh w-screen items-center justify-center bg-background p-4"
     >
-      <button
+      <IconButton
         aria-label="Close Game Difficulty Selection Modal"
         onClick={() => setIsDifficultyModalOpen(false)}
-        className="fixed top-10 right-10 self-end text-foreground"
+        className="fixed right-4 top-4"
       >
         <X />
-      </button>
+      </IconButton>
 
-      <article className="w-[80%] flex flex-col items-center bg-background p-4 border border-border rounded-xl shadow-neumorphic">
-        <h2 className="self-start text-xl mb-10"> Select Game Difficulty </h2>
+      <Panel className="flex w-full max-w-md flex-col items-center p-6">
+        <h2 className="mb-8 self-start text-xl">Select difficulty</h2>
 
-        <div className="w-full flex flex-col items-center gap-3">
-          {options.map(option => (
-            <button
+        <div className="flex w-full flex-col items-center gap-3">
+          {options.map((option) => (
+            <GameButton
               key={option}
-              className={`w-full p-4 capitalize border ${
-                currDiff === option
-                  ? "border-primary shadow-neumorphic-pressed"
-                  : "border-border shadow-neumorphic"
-              } rounded-lg transition-al duration-200 active:shadow-neumorphic-pressed hover:shadow-neumorphic-pressed`}
+              variant={currDiff === option ? "selected" : "neutral"}
+              className="w-full capitalize"
               onClick={() => {
                 handleDifficultyUpdate(option);
                 play("click");
               }}
             >
               {option}
-            </button>
+            </GameButton>
           ))}
         </div>
-      </article>
+      </Panel>
     </section>
   );
 };

@@ -5,7 +5,7 @@ const steps = [
   "Preparing a clever hint…",
   "Shuffling the letters…",
   "Setting the timer…",
-  "Almost ready — hang tight..."
+  "Almost ready — hang tight...",
 ];
 
 const tips = [
@@ -19,7 +19,7 @@ const tips = [
   "Hints help — but they reduce your score.",
   "Rearranging letters mentally can unlock patterns.",
   "Difficulty affects time, not intelligence 😄",
-  "Play daily mode for a new game everyday"
+  "Play daily mode for a new game everyday",
 ];
 
 const LoadingScreen = () => {
@@ -59,7 +59,7 @@ const LoadingScreen = () => {
 
   useEffect(() => {
     const tipTimer = setInterval(() => {
-      setCurrentTip(prev => (prev + 1) % tips.length);
+      setCurrentTip((prev) => (prev + 1) % tips.length);
     }, 2500);
 
     return () => clearInterval(tipTimer);
@@ -68,14 +68,24 @@ const LoadingScreen = () => {
   return (
     <div className="w-full h-screen fixed top-0 flex flex-col items-center justify-center px-6 text-center z-50">
       <div className="flex flex-col items-center gap-5 -mt-24">
-        <div className="text-7xl animate-bounce"> 🤹 </div>
+        <div className="flex items-center gap-2" aria-hidden="true">
+          {["E", "M", "…"].map((letter, index) => (
+            <span
+              key={letter}
+              className={`flex h-12 w-12 items-center justify-center rounded-[10px] border-[3px] border-outline bg-tile-face text-xl font-bold text-tile-ink shadow-[0_4px_0_rgb(var(--tile-edge))] ${index === 1 ? "-translate-y-2" : ""}`}
+            >
+              {letter}
+            </span>
+          ))}
+        </div>
 
         <div className="h-10 flex items-center justify-center text-lg opacity-90 mt-2">
           {steps[currentStep]}
         </div>
 
         <div className="absolute bottom-[5rem] max-w-md text-xs leading-relaxed text-center opacity-80 px-4">
-          <strong className="text-primary">💡 Tip:</strong> {tips[currentTip]}
+          <strong className="text-primary-ink">💡 Tip:</strong>{" "}
+          {tips[currentTip]}
         </div>
       </div>
     </div>

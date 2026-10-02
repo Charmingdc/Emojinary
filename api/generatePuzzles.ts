@@ -17,13 +17,6 @@ const puzzlesSchema = z.object({
   puzzles: z.array(puzzleSchema).min(1)
 });
 
-const model = new ChatGroq({
-  model: "openai/gpt-oss-120b",
-  apiKey: process.env.GROQ_API_KEY,
-  temperature: 0.1,
-  maxRetries: 0
-});
-
 const extractJson = (text: string) => {
   const match = text.match(/\{[\s\S]*\}/);
   if (!match) throw new Error("No JSON object found in response");
@@ -35,6 +28,12 @@ const generateWithRetry = async (
   retries = 1
 ): Promise<z.infer<typeof puzzlesSchema>> => {
   let lastError: unknown;
+  const model = new ChatGroq({
+    model: "openai/gpt-oss-120b",
+    apiKey: process.env.GROQ_API_KEY,
+    temperature: 0.1,
+    maxRetries: 0
+  });
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
@@ -56,12 +55,35 @@ const generatePuzzles = async (req: VercelRequest, res: VercelResponse) => {
       .json({ success: false, message: "Method Not Allowed" });
   }
 
+  if (!process.env.GROQ_API_KEY) {
+    return res.status(503).json({
+      success: false,
+      message: "Puzzle generation is not configured: GROQ_API_KEY is missing."
+    });
+  }
+
   const count = Number(req.query.count);
-  const difficulty = req.query.difficulty as
-    | "easy"
-    | "medium"
-    | "hard"
-    | "random";
+  const requestedDifficulty = req.query.difficulty;
+  const validDifficulties = ["easy", "medium", "hard", "random"] as const;
+
+  if (!Number.isInteger(count) || count < 1 || count > 20) {
+    return res.status(400).json({
+      success: false,
+      message: "count must be an integer between 1 and 20."
+    });
+  }
+
+  if (
+    typeof requestedDifficulty !== "string" ||
+    !validDifficulties.includes(requestedDifficulty as (typeof validDifficulties)[number])
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: "difficulty must be easy, medium, hard, or random."
+    });
+  }
+
+  const difficulty = requestedDifficulty as (typeof validDifficulties)[number];
 
   const { primary, secondary, tertiary } = pickFlavors(flavors);
 

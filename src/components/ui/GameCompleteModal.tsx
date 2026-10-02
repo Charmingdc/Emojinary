@@ -1,15 +1,9 @@
-import { Trophy, X, AlertCircle } from "lucide-react";
+import { AlertCircle, Star, Trophy, X } from "lucide-react";
 import { toast } from "sonner";
-import { useWindowSize } from "react-use";
-import Confetti from "react-confetti";
 import NavButton from "./NavButton";
-
+import { Panel } from "@/components/ui/GamePrimitives";
 import usePuzzlesDifficulty from "@/hooks/usePuzzlesDifficulty";
-import {
-  generateShareableResult,
-  getResultMessage,
-  getTrophyColor
-} from "@/utils";
+import { generateShareableResult, getResultMessage } from "@/utils";
 import type { GamePuzzle } from "@/types";
 
 interface Props {
@@ -25,28 +19,24 @@ const GameCompleteModal = ({
   bestScore,
   puzzles,
   handleReplay,
-  handleGoHome
+  handleGoHome,
 }: Props) => {
-  const { width, height } = useWindowSize();
   const { difficulty } = usePuzzlesDifficulty();
-
   const puzzleArray = Array.isArray(puzzles) ? puzzles : [puzzles];
   const solvedCount = puzzleArray.filter(
-    p => p.puzzleState === "solved"
+    (p) => p.puzzleState === "solved",
   ).length;
   const skippedCount = puzzleArray.filter(
-    p => p.puzzleState === "skipped"
+    (p) => p.puzzleState === "skipped",
   ).length;
   const unsolvedCount = puzzleArray.filter(
-    p => p.puzzleState === "unsolved"
+    (p) => p.puzzleState === "unsolved",
   ).length;
-
   const totalPuzzles = puzzleArray.length;
   const isSinglePuzzle = totalPuzzles === 1;
-  const reviewPuzzles = puzzleArray.filter(p => p.puzzleState !== "solved");
+  const reviewPuzzles = puzzleArray.filter((p) => p.puzzleState !== "solved");
   const allSolved = reviewPuzzles.length === 0;
   const resultMessage = getResultMessage(solvedCount, totalPuzzles);
-  const trophyColor = getTrophyColor(solvedCount, totalPuzzles);
 
   const handleShareResult = async () => {
     const text = generateShareableResult({
@@ -55,7 +45,7 @@ const GameCompleteModal = ({
       bestScore,
       solvedCount,
       totalPuzzles,
-      difficulty
+      difficulty,
     });
 
     if (navigator.share) {
@@ -63,14 +53,12 @@ const GameCompleteModal = ({
         await navigator.share({
           title: "Emojinary Result",
           text,
-          url: "https://funemojinary.vercel.app"
+          url: "https://funemojinary.vercel.app",
         });
       } catch (err: unknown) {
-        if (err instanceof Error) {
+        if (err instanceof Error)
           toast.error(`Share cancelled: ${err.message}`);
-        } else {
-          toast.error("Share cancelled");
-        }
+        else toast.error("Share cancelled");
       }
     } else {
       await navigator.clipboard.writeText(text);
@@ -79,152 +67,126 @@ const GameCompleteModal = ({
   };
 
   return (
-    <section className="fixed top-0 left-0 bottom-0 w-screen h-screen bg-black/60 backdrop-blur-xl z-50 flex flex-col items-center justify-start p-6 overflow-hidden">
-      <div className="flex flex-col items-center gap-1 mt-4">
-        <Trophy size={96} className={`${trophyColor} animate-bounce`} />
-
-        <h1 className="text-3xl font-bold text-white">{resultMessage}</h1>
-
-        {allSolved ? (
-          <p className="text-green-400 text-sm mt-1">
-            🎉 Perfect score! Nothing to review.
-          </p>
-        ) : (
-          <p className="text-sm text-gray-300 -mt-2">
-            You solved {solvedCount} out of {totalPuzzles} puzzles
-          </p>
-        )}
-      </div>
-
-      <div
-        className={`flex justify-around w-full max-w-5xl gap-2 text-md
-     font-medium px-6 py-4 text-white mt-2 ${allSolved ? "mb-20" : ""}`}
-      >
-        <div className="text-center">
-          Score
-          <br />
-          <span className="text-primary text-xl">{score}</span>
+    <section className="fixed inset-0 z-50 flex h-svh w-screen items-center justify-center overflow-y-auto bg-background/95 p-4 sm:p-6">
+      <Panel className="my-auto flex w-full max-w-5xl flex-col items-center gap-4 p-4 sm:p-6">
+        <div className="flex flex-col items-center gap-2 text-center">
+          <Trophy size={72} className="text-accent" />
+          <div
+            className="flex items-center gap-2 text-accent"
+            aria-label="Three stars"
+          >
+            {[0, 1, 2].map((star) => (
+              <Star key={star} size={26} fill="currentColor" />
+            ))}
+          </div>
+          <h1 className="text-3xl text-foreground">{resultMessage}</h1>
+          {allSolved ? (
+            <p className="text-sm text-success-ink">
+              Perfect score! Nothing to review.
+            </p>
+          ) : (
+            <p className="text-sm text-muted">
+              You solved {solvedCount} out of {totalPuzzles} puzzles
+            </p>
+          )}
         </div>
 
-        {bestScore !== undefined && (
-          <div className="text-center">
-            Best
+        <div className="mt-2 flex w-full max-w-3xl justify-around gap-2 px-2 py-3 text-center font-medium text-foreground">
+          <div>
+            Score
             <br />
-            <span className="text-primary text-xl">{bestScore}</span>
+            <span className="text-xl text-primary-ink">{score}</span>
+          </div>
+          {bestScore !== undefined && (
+            <div>
+              Best
+              <br />
+              <span className="text-xl text-primary-ink">{bestScore}</span>
+            </div>
+          )}
+          <div className="text-success-ink">
+            Solved
+            <br />
+            <span className="text-xl">{solvedCount}</span>
+          </div>
+          <div className="text-muted">
+            Skipped
+            <br />
+            <span className="text-xl">{skippedCount}</span>
+          </div>
+          <div className="text-muted">
+            Unsolved
+            <br />
+            <span className="text-xl">{unsolvedCount}</span>
+          </div>
+        </div>
+
+        {!allSolved && (
+          <div
+            className={`w-full ${isSinglePuzzle ? "mt-2" : "max-h-[40svh] overflow-auto"}`}
+          >
+            <div className="sticky top-0 z-10 grid grid-cols-[2fr_2fr_1fr] gap-4 border-b border-outline bg-panel px-3 py-3 font-semibold text-muted sm:px-6">
+              <span>Emojis</span>
+              <span>Answer</span>
+              <span>Status</span>
+            </div>
+            {reviewPuzzles.map((puzzle, idx) => (
+              <div
+                key={idx}
+                className="grid grid-cols-[2fr_2fr_1fr] items-center gap-4 border-b border-outline/20 px-3 py-4 sm:px-6"
+              >
+                <div className="flex flex-wrap gap-1 truncate text-foreground">
+                  {puzzle.emojis.map((emoji, emojiIdx) => (
+                    <span key={emojiIdx}>
+                      {emoji}
+                      {emojiIdx < puzzle.emojis.length - 1 ? "+" : ""}
+                    </span>
+                  ))}
+                </div>
+                <div className="truncate text-center font-medium text-foreground">
+                  {puzzle.answer}
+                </div>
+                <div className="flex items-center justify-center text-muted">
+                  {puzzle.puzzleState === "skipped" && <X size={18} />}
+                  {puzzle.puzzleState === "unsolved" && (
+                    <AlertCircle size={18} />
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
-        <div className="text-center text-green-400">
-          Solved
-          <br />
-          <span className="text-xl">{solvedCount}</span>
-        </div>
-
-        <div className="text-center text-red-400">
-          Skipped
-          <br />
-          <span className="text-xl">{skippedCount}</span>
-        </div>
-
-        <div className="text-center text-gray-400">
-          Unsolved
-          <br />
-          <span className="text-xl">{unsolvedCount}</span>
-        </div>
-      </div>
-
-      {!allSolved && (
         <div
-          className={`w-full max-w-5xl ${
-            isSinglePuzzle
-              ? "max-h-auto mt-2"
-              : "flex-1 overflow-auto max-h-[calc(100vh-240px)]"
-          }`}
+          className={`flex flex-wrap justify-center gap-3 ${isSinglePuzzle ? "mt-2" : "mt-1"}`}
         >
-          <div className="grid grid-cols-[2fr_2fr_1fr] gap-4 px-6 py-3 font-semibold text-gray-300 border-b border-gray-500 sticky top-0 bg-black/60 backdrop-blur-lg z-10">
-            <span>Emojis</span>
-            <span>Answer</span>
-            <span>Status</span>
-          </div>
-
-          {reviewPuzzles.map((puzzle, idx) => (
-            <div
-              key={idx}
-              className="grid grid-cols-[2fr_2fr_1fr] gap-4 items-center px-6 py-4 border-b border-gray-700 hover:bg-white/5"
+          {handleReplay && (
+            <NavButton
+              variant="neutral"
+              wrapperClassName="w-36"
+              className="px-6 py-3"
+              onClick={handleReplay}
             >
-              <div className="flex flex-wrap gap-1 truncate text-white">
-                {puzzle.emojis.map((e, i) => (
-                  <span key={i}>
-                    {e}
-                    {i < puzzle.emojis.length - 1 ? "+" : ""}
-                  </span>
-                ))}
-              </div>
-              <div className="text-center truncate font-medium text-white">
-                {puzzle.answer}
-              </div>
-              <div className="flex justify-center items-center">
-                {puzzle.puzzleState === "skipped" && (
-                  <X size={18} className="text-red-400" />
-                )}
-                {puzzle.puzzleState === "unsolved" && (
-                  <AlertCircle size={18} className="text-gray-400" />
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <div
-        className={`flex flex-wrap justify-center gap-4 mb-4 ${
-          isSinglePuzzle ? "mt-20" : "mt-2"
-        }`}
-      >
-        {handleReplay && (
+              Replay
+            </NavButton>
+          )}
           <NavButton
             wrapperClassName="w-36"
-            className="py-3 px-6"
-            onClick={handleReplay}
+            className="px-6 py-3"
+            onClick={handleGoHome}
           >
-            Replay
+            Go Home
           </NavButton>
-        )}
-
-        <NavButton
-          wrapperClassName="w-36"
-          className="py-3 px-6"
-          onClick={handleGoHome}
-        >
-          Go Home
-        </NavButton>
-
-        <NavButton
-          wrapperClassName="w-36"
-          className="py-3 px-6"
-          onClick={handleShareResult}
-        >
-          Share Result
-        </NavButton>
-      </div>
-
-      {solvedCount === totalPuzzles && (
-        <Confetti
-          width={width}
-          height={height}
-          numberOfPieces={250}
-          gravity={0.3}
-          opacity={0.8}
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "90vh",
-            pointerEvents: "none"
-          }}
-        />
-      )}
+          <NavButton
+            variant="neutral"
+            wrapperClassName="w-36"
+            className="px-6 py-3"
+            onClick={handleShareResult}
+          >
+            Share Result
+          </NavButton>
+        </div>
+      </Panel>
     </section>
   );
 };

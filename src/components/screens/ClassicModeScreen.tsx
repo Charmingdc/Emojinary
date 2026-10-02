@@ -18,7 +18,13 @@ const ClassicModeScreen = () => {
   const { play } = useGameAudio();
   const { bestScore, updateBestScore } = useBestScore();
 
-  const { data: puzzles, isLoading, isError, newGame } = useGeneratedPuzzles();
+  const {
+    data: puzzles,
+    isLoading,
+    isError,
+    error,
+    newGame,
+  } = useGeneratedPuzzles();
 
   useEffect(() => {
     if (puzzles) {
@@ -26,15 +32,19 @@ const ClassicModeScreen = () => {
         puzzles.map((puzzle: Puzzle) => ({
           ...puzzle,
           puzzleState: "unsolved",
-          hintUsed: false
-        }))
+          hintUsed: false,
+        })),
       );
     }
   }, [puzzles]);
 
   if (isLoading) return <LoadingScreen />;
   if (isError || !gamePuzzles || gamePuzzles.length === 0)
-    return <ErrorScreen />;
+    return (
+      <ErrorScreen
+        message={error instanceof Error ? error.message : undefined}
+      />
+    );
 
   return (
     <ClassicModeGame

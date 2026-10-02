@@ -1,43 +1,25 @@
-import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
-import { Github, Twitter } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 const Topbar = () => {
   const navigate = useNavigate();
   return (
-    <ul className="w-screen flex flex-row items-center justify-between bg-background border-b px-4 pt-5 pb-3">
-      <li onClick={() => navigate("/")}>
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 0.8 }}
-          style={{ transformOrigin: "left" }}
-          className="overflow-hidden inline-block"
-        >
-          <h1 className="text-2xl"> Emojinary </h1>
-        </motion.div>
-      </li>
-
-      <li className="flex items-center justify-center gap-3 text-xs font-extralight -mt-1">
-        <a
-          key="github"
-          href="https://github.com/Charmingdc/Emojinary"
-          target="_blank"
-          className="flex items-center gap-2 p-2 border rounded-full text-xs"
-        >
-          <Github size={14} /> Star on Github
-        </a>
-
-        <a
-          key="twitter"
-          href="https://x.com/Charmingdc01"
-          target="_blank"
-          className="text-xs"
-        >
-          <Twitter size={19} />
-        </a>
-      </li>
-    </ul>
+    <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-4">
+      <button
+        type="button"
+        onClick={() => navigate(-1)}
+        className="inline-flex min-h-[52px] items-center gap-2 rounded-[10px] border-[3px] border-outline bg-surface px-4 font-bold uppercase shadow-[0_4px_0_rgb(var(--surface-edge))] transition-transform duration-[80ms] active:translate-y-1 active:shadow-[inset_0_3px_0_rgb(var(--tile-edge)),inset_0_4px_8px_rgba(39,35,31,0.16)]"
+      >
+        <ArrowLeft size={18} /> Back
+      </button>
+      <button
+        type="button"
+        onClick={() => navigate("/")}
+        className="min-h-[52px] px-2 text-xl font-bold tracking-wide"
+      >
+        Emojinary
+      </button>
+    </div>
   );
 };
 
