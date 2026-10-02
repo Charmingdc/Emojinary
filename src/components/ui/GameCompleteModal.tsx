@@ -67,10 +67,10 @@ const GameCompleteModal = ({
   };
 
   return (
-    <section className="fixed inset-0 z-50 flex h-svh w-screen items-center justify-center overflow-y-auto bg-background/95 p-4 sm:p-6">
-      <Panel className="my-auto flex w-full max-w-5xl flex-col items-center gap-4 p-4 sm:p-6">
-        <div className="flex flex-col items-center gap-2 text-center">
-          <Trophy size={72} className="text-accent" />
+    <section className="fixed inset-0 z-50 flex h-svh w-screen items-center justify-center overflow-y-auto bg-background/95 p-3 sm:p-6">
+      <Panel className="my-auto flex w-full max-w-4xl flex-col items-center gap-5 p-4 sm:gap-6 sm:p-7">
+        <header className="flex w-full flex-col items-center gap-2 border-b border-border pb-5 text-center">
+          <Trophy size={64} className="text-accent" />
           <div
             className="flex items-center gap-2 text-accent"
             aria-label="Three stars"
@@ -79,7 +79,9 @@ const GameCompleteModal = ({
               <Star key={star} size={26} fill="currentColor" />
             ))}
           </div>
-          <h1 className="text-3xl text-foreground">{resultMessage}</h1>
+          <h1 className="text-3xl text-foreground sm:text-4xl">
+            {resultMessage}
+          </h1>
           {allSolved ? (
             <p className="text-sm text-success-ink">
               Perfect score! Nothing to review.
@@ -89,43 +91,55 @@ const GameCompleteModal = ({
               You solved {solvedCount} out of {totalPuzzles} puzzles
             </p>
           )}
-        </div>
+        </header>
 
-        <div className="mt-2 flex w-full max-w-3xl justify-around gap-2 px-2 py-3 text-center font-medium text-foreground">
-          <div>
-            Score
-            <br />
-            <span className="text-xl text-primary-ink">{score}</span>
+        <div className="grid w-full grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
+          <div className="rounded-[10px] border border-border bg-background p-3 text-center font-medium text-foreground">
+            <span className="block text-xs font-bold uppercase tracking-wide text-muted">
+              Score
+            </span>
+            <span className="mt-1 block text-2xl text-primary-ink">
+              {score}
+            </span>
           </div>
           {bestScore !== undefined && (
-            <div>
-              Best
-              <br />
-              <span className="text-xl text-primary-ink">{bestScore}</span>
+            <div className="rounded-[10px] border border-border bg-background p-3 text-center font-medium text-foreground">
+              <span className="block text-xs font-bold uppercase tracking-wide text-muted">
+                Best
+              </span>
+              <span className="mt-1 block text-2xl text-primary-ink">
+                {bestScore}
+              </span>
             </div>
           )}
-          <div className="text-success-ink">
-            Solved
-            <br />
-            <span className="text-xl">{solvedCount}</span>
+          <div className="rounded-[10px] border border-border bg-background p-3 text-center font-medium text-success-ink">
+            <span className="block text-xs font-bold uppercase tracking-wide text-muted">
+              Solved
+            </span>
+            <span className="mt-1 block text-2xl">{solvedCount}</span>
           </div>
-          <div className="text-muted">
-            Skipped
-            <br />
-            <span className="text-xl">{skippedCount}</span>
+          <div className="rounded-[10px] border border-border bg-background p-3 text-center font-medium text-foreground">
+            <span className="block text-xs font-bold uppercase tracking-wide text-muted">
+              Skipped
+            </span>
+            <span className="mt-1 block text-2xl">{skippedCount}</span>
           </div>
-          <div className="text-muted">
-            Unsolved
-            <br />
-            <span className="text-xl">{unsolvedCount}</span>
+          <div className="rounded-[10px] border border-border bg-background p-3 text-center font-medium text-foreground">
+            <span className="block text-xs font-bold uppercase tracking-wide text-muted">
+              Unsolved
+            </span>
+            <span className="mt-1 block text-2xl">{unsolvedCount}</span>
           </div>
         </div>
 
         {!allSolved && (
-          <div
-            className={`w-full ${isSinglePuzzle ? "mt-2" : "max-h-[40svh] overflow-auto"}`}
+          <section
+            className={`w-full overflow-hidden rounded-[10px] border border-border ${isSinglePuzzle ? "" : "max-h-[35svh] overflow-y-auto"}`}
           >
-            <div className="sticky top-0 z-10 grid grid-cols-[2fr_2fr_1fr] gap-4 border-b border-outline bg-panel px-3 py-3 font-semibold text-muted sm:px-6">
+            <h2 className="border-b border-border bg-background px-4 py-3 text-sm font-bold uppercase tracking-wide">
+              Puzzles to review
+            </h2>
+            <div className="sticky top-0 z-10 grid grid-cols-[1.3fr_1fr_auto] gap-2 border-b border-border bg-panel px-3 py-3 text-xs font-semibold uppercase text-muted sm:grid-cols-[2fr_2fr_1fr] sm:gap-4 sm:px-6">
               <span>Emojis</span>
               <span>Answer</span>
               <span>Status</span>
@@ -133,7 +147,7 @@ const GameCompleteModal = ({
             {reviewPuzzles.map((puzzle, idx) => (
               <div
                 key={idx}
-                className="grid grid-cols-[2fr_2fr_1fr] items-center gap-4 border-b border-outline/20 px-3 py-4 sm:px-6"
+                className="grid grid-cols-[1.3fr_1fr_auto] items-center gap-2 border-b border-border px-3 py-4 last:border-b-0 sm:grid-cols-[2fr_2fr_1fr] sm:gap-4 sm:px-6"
               >
                 <div className="flex flex-wrap gap-1 truncate text-foreground">
                   {puzzle.emojis.map((emoji, emojiIdx) => (
@@ -154,12 +168,10 @@ const GameCompleteModal = ({
                 </div>
               </div>
             ))}
-          </div>
+          </section>
         )}
 
-        <div
-          className={`flex flex-wrap justify-center gap-3 ${isSinglePuzzle ? "mt-2" : "mt-1"}`}
-        >
+        <div className="flex w-full flex-wrap justify-center gap-3 border-t border-border pt-5">
           {handleReplay && (
             <NavButton
               variant="neutral"

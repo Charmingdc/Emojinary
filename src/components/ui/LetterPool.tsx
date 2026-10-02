@@ -19,7 +19,7 @@ const LetterPool: React.FC<LetterPoolProps> = ({ letters, onLetterClick }) => {
 
       <Panel
         tone="game"
-        className="flex w-full max-w-md flex-wrap justify-center gap-3 p-4"
+        className="flex w-full max-w-3xl flex-wrap justify-center gap-3 p-4 sm:gap-4 sm:p-6"
       >
         <AnimatePresence initial={false}>
           {letters.map((token, idx) => (

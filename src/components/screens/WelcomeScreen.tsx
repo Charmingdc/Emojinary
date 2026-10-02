@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Brain, Volume2, VolumeX } from "lucide-react";
+import { ArrowRight, Brain, RotateCcw, Volume2, VolumeX } from "lucide-react";
 
 import useSound from "@/hooks/useSound";
 import {
@@ -11,7 +11,11 @@ import {
 } from "@/components/ui/GamePrimitives";
 import DifficultySelectionModal from "@/components/DifficultySelectionModal";
 import usePuzzlesDifficulty from "@/hooks/usePuzzlesDifficulty";
-import { getProfileAvatarSeed, saveProfile } from "@/utils/profileStorage";
+import {
+  clearPlayerData,
+  getProfileAvatarSeed,
+  saveProfile,
+} from "@/utils/profileStorage";
 import type { PlayerProfile } from "@/utils/profileStorage";
 
 interface WelcomeScreenProps {
@@ -37,6 +41,14 @@ const WelcomeScreen = ({ profile, onProfileChange }: WelcomeScreenProps) => {
   const saveName = () => {
     onProfileChange(saveProfile({ username: draftName }));
     setIsEditingName(false);
+  };
+
+  const resetPlayerData = () => {
+    if (!window.confirm("Reset your profile, settings, and saved game data?")) {
+      return;
+    }
+    clearPlayerData();
+    window.location.assign("/");
   };
 
   return (
@@ -168,6 +180,14 @@ const WelcomeScreen = ({ profile, onProfileChange }: WelcomeScreenProps) => {
           onClick={() => setIsDifficultyModalOpen(true)}
         >
           <Brain size={22} />
+        </IconButton>
+        <IconButton
+          aria-label="Reset player data"
+          title="Reset player data"
+          onClick={resetPlayerData}
+          className="text-wrong"
+        >
+          <RotateCcw size={22} />
         </IconButton>
         <a
           href="/how-to-play"

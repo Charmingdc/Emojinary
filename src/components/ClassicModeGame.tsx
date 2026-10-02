@@ -108,7 +108,7 @@ const ClassicModeGame = ({
       return;
     }
 
-    setTimeout(goToNextPuzzle, 500);
+    setTimeout(goToNextPuzzle, 1500);
   };
 
   const handleLetterPick = (letter: string, index: number) => {
@@ -134,6 +134,7 @@ const ClassicModeGame = ({
   const handleLetterRemove = (slotIdx: number) => {
     const removed = handleSlotClick(slotIdx);
     if (!removed) return;
+    setAnswerState("neutral");
 
     const tokenId =
       slotIds[slotIdx] ?? `${currentPuzzleIdx}-${slotIdx}-${Date.now()}`;
@@ -185,23 +186,25 @@ const ClassicModeGame = ({
 
   return (
     <LayoutGroup id="classic-puzzle-letters">
-      <main className="w-full flex flex-col items-center gap-3 p-4 pb-12">
-        <h2 className="self-start -mt-4">🕹️ Classic Mode</h2>
+      <main className="mx-auto flex w-full max-w-6xl flex-col items-center gap-3 px-4 pb-12 pt-2 sm:px-6 lg:px-8">
+        <h2 className="w-full max-w-5xl text-left">🕹️ Classic Mode</h2>
 
-        <StatsBar
-          stats={{
-            currentPuzzleIdx: currentPuzzleIdx + 1,
-            puzzleCount,
-            points,
-            time: formatTime(),
-            difficulty,
-          }}
-        />
+        <div className="w-full max-w-5xl">
+          <StatsBar
+            stats={{
+              currentPuzzleIdx: currentPuzzleIdx + 1,
+              puzzleCount,
+              points,
+              time: formatTime(),
+              difficulty,
+            }}
+          />
+        </div>
 
-        <div className="w-full flex flex-col items-center gap-3 mt-6">
+        <div className="mx-auto mt-6 flex w-full max-w-4xl flex-col items-center gap-3">
           <h3 className="text-lg">Can you guess the word?</h3>
 
-          <div className="w-full flex items-center justify-center gap-3">
+          <div className="flex w-full items-center justify-center gap-3 sm:gap-5">
             <GameControls
               {...{
                 showHint,
@@ -226,12 +229,14 @@ const ClassicModeGame = ({
           )}
         </div>
 
-        <AnswerSlots
-          slots={selectedLetters}
-          slotIds={slotIds}
-          onSlotClick={handleLetterRemove}
-          answerState={answerState}
-        />
+        <div className="w-full max-w-4xl">
+          <AnswerSlots
+            slots={selectedLetters}
+            slotIds={slotIds}
+            onSlotClick={handleLetterRemove}
+            answerState={answerState}
+          />
+        </div>
 
         <LetterPool letters={letterPool} onLetterClick={handleLetterPick} />
 

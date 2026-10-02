@@ -1,0 +1,8 @@
+what to do:
+- the game looks good on mobile i.e smaller screens but looks bad on larger screens, fix the responsiveness and layout symmetry on larger screens
+- make sure the daily mode can only be play once a day by maybe storing the last played time and comparing it against the current time to check if its a new day, not necceasril 24 hrs but a new day
+- fix the letter pool and answer slots, picking a letter from the letter pool should remove that letter from the list of letters in the letter pool and added to the anwer slots and removing it from the answer slots add it back to the letter pool
+- add a reset data icon at the bottom at the same position as the difficulty and sound icons
+- and fix the game result screen, it currently lacks structure
+- and add more time for the celebratery animations to display when an answer is correct
+- and when an answer is wronf, currently it turns red (alll the answer slots), but when a letter is removed it should retun back to its default state not persist in the error state

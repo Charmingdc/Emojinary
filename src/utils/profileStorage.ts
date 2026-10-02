@@ -92,5 +92,16 @@ export const clearProfile = () => {
   }
 };
 
+export const clearPlayerData = () => {
+  try {
+    const playerKeys = Object.keys(localStorage).filter((key) =>
+      key.startsWith("$emojinary_"),
+    );
+    playerKeys.forEach((key) => localStorage.removeItem(key));
+  } catch {
+    // Clearing browser storage is best-effort.
+  }
+};
+
 export const getProfileAvatarSeed = (profile: PlayerProfile) =>
   profile.username.trim().toLowerCase() || profile.guestSeed;

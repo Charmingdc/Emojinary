@@ -62,8 +62,8 @@ export default {
         },
         correctPop: {
           "0%, 100%": { transform: "scale(1)" },
-          "45%": { transform: "scale(1.14)" },
-          "70%": { transform: "scale(0.97)" }
+          "35%": { transform: "scale(1.12)" },
+          "60%": { transform: "scale(0.98)" }
         },
         tilePlace: {
           "0%": { transform: "translateY(4px) scale(0.92)" },
@@ -91,7 +91,7 @@ export default {
         "onboarding-enter": "onboardingEnter 200ms ease-out both",
         "playful-pop": "playfulPop 180ms ease-out",
         "wobble-x": "wobbleX 300ms ease-in-out",
-        "correct-pop": "correctPop 420ms ease-out both",
+        "correct-pop": "correctPop 760ms cubic-bezier(0.2, 0.8, 0.2, 1) both",
         "tile-place": "tilePlace 120ms ease-out both",
         pop: "pop 0.8s ease-out forwards"
       }

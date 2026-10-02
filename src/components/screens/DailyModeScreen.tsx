@@ -17,7 +17,14 @@ const DailyModeScreen = () => {
   const { play } = useGameAudio();
   const { hasPlayedToday, timeUntilNextPuzzle } = useHasPlayedToday();
 
-  const { data: puzzleData, isLoading, isError, error } = useDailyPuzzle();
+  const {
+    data: puzzleData,
+    isLoading,
+    isError,
+    error,
+  } = useDailyPuzzle({
+    enabled: !hasPlayedToday,
+  });
   const [dailyPuzzle, setDailyPuzzle] = useState<GamePuzzle | null>(null);
 
   useEffect(() => {
@@ -30,6 +37,10 @@ const DailyModeScreen = () => {
     });
   }, [puzzleData]);
 
+  if (hasPlayedToday) {
+    return <DailyCompletedScreen timeUntilNextPuzzle={timeUntilNextPuzzle} />;
+  }
+
   if (isLoading) return <LoadingScreen />;
   if (isError || !dailyPuzzle)
     return (
@@ -37,10 +48,6 @@ const DailyModeScreen = () => {
         message={error instanceof Error ? error.message : undefined}
       />
     );
-
-  if (hasPlayedToday) {
-    return <DailyCompletedScreen timeUntilNextPuzzle={timeUntilNextPuzzle} />;
-  }
 
   return <DailyModeGame puzzle={dailyPuzzle} play={play} navigate={navigate} />;
 };
