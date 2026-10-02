@@ -22,9 +22,6 @@ const ErrorScreen = ({ message }: ErrorScreenProps) => {
     <main className="fixed inset-0 flex h-svh w-full items-center justify-center bg-background p-6 text-center">
       <Panel className="flex w-full max-w-md flex-col items-center gap-5 p-8">
         <h2 className="text-2xl">{randomMessage}</h2>
-        {message && (
-          <p className="max-w-sm break-words text-sm text-muted">{message}</p>
-        )}
         <div className="flex w-full flex-col gap-3">
           <GameButton
             className="w-full"

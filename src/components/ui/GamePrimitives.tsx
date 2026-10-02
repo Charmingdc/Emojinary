@@ -114,7 +114,7 @@ export const Panel = ({
 }) => (
   <section
     {...props}
-    className={`rounded-[14px] border-[3px] border-outline p-4 shadow-[0_4px_0_rgb(var(--panel-edge))] ${tone === "game" ? "bg-game-panel text-game-panel-text [--panel-edge:var(--game-panel-edge)]" : "bg-panel text-foreground"} ${className}`}
+    className={`rounded-[14px] border-[3px] border-outline p-4 ${tone === "game" ? "bg-game-panel text-game-panel-text shadow-none" : "bg-panel text-foreground shadow-[0_4px_0_rgb(var(--panel-edge))]"} ${className}`}
   >
     {children}
   </section>

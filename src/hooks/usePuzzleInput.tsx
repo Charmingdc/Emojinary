@@ -1,38 +1,35 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const usePuzzleInput = (answerLength: number) => {
-  const [slots, setSlots] = useState<string[]>(Array(answerLength).fill(""));
+  const initialSlots = Array(answerLength).fill("");
+  const [slots, setSlots] = useState<string[]>(initialSlots);
+  const slotsRef = useRef(slots);
 
   const reset = () => {
-    setSlots(Array(answerLength).fill(""));
+    const emptySlots = Array(answerLength).fill("");
+    slotsRef.current = emptySlots;
+    setSlots(emptySlots);
   };
 
-  const insert = (letter: string): string | null => {
-    let insertedLetter: string | null = null;
+  const insert = (letter: string): boolean => {
+    const emptyIndex = slotsRef.current.indexOf("");
+    if (emptyIndex === -1) return false;
 
-    setSlots(prev => {
-      const emptyIndex = prev.indexOf("");
-      if (emptyIndex === -1) return prev;
-
-      const next = [...prev];
-      next[emptyIndex] = letter;
-      insertedLetter = letter;
-      return next;
-    });
-
-    return insertedLetter;
+    const next = [...slotsRef.current];
+    next[emptyIndex] = letter;
+    slotsRef.current = next;
+    setSlots(next);
+    return true;
   };
 
   const removeAt = (index: number): string | null => {
-    let removedLetter: string | null = null;
+    const removedLetter = slotsRef.current[index] || null;
+    if (!removedLetter) return null;
 
-    setSlots(prev => {
-      const next = [...prev];
-      removedLetter = next[index] || null;
-      next[index] = "";
-      return next;
-    });
-
+    const next = [...slotsRef.current];
+    next[index] = "";
+    slotsRef.current = next;
+    setSlots(next);
     return removedLetter;
   };
 
@@ -43,7 +40,7 @@ const usePuzzleInput = (answerLength: number) => {
     reset,
     insert,
     removeAt,
-    isComplete
+    isComplete,
   };
 };
 

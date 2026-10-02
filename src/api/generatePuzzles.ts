@@ -19,7 +19,16 @@ const generatePuzzles = async (params: GeneratePuzzlesParams) => {
   if (params.difficulty)
     url.searchParams.append("difficulty", params.difficulty);
 
-  const res = await fetch(url.toString());
+  let res: Response;
+  try {
+    res = await fetch(url.toString());
+  } catch (error) {
+    console.error("[Puzzle generation] Network request failed:", error);
+    throw new Error(
+      "We couldn’t reach the puzzle service. Check your connection and try again.",
+    );
+  }
+
   const responseText = await res.text();
   let json: GeneratePuzzlesResponse | null = null;
 
@@ -32,15 +41,21 @@ const generatePuzzles = async (params: GeneratePuzzlesParams) => {
   if (!res.ok) {
     const proxyError = responseText.match(/ECONNREFUSED|ECONNRESET|ENOTFOUND/i);
     const detail = json?.error ?? json?.message;
+    console.error("[Puzzle generation] API request failed:", {
+      status: res.status,
+      detail: detail ?? responseText.slice(0, 500),
+    });
     throw new Error(
-      detail ??
-        (proxyError
-          ? "The local puzzle API is not running on port 3000. Start the Vercel development server with `npx vercel dev`."
-          : `Puzzle API returned ${res.status}${responseText && !responseText.includes("<html") ? `: ${responseText.slice(0, 180)}` : ""}`),
+      proxyError
+        ? "The puzzle service is offline right now. Please try again in a moment."
+        : "We couldn’t make a puzzle just now. Please try again.",
     );
   }
 
-  if (!json?.data) throw new Error("Puzzle API response did not include puzzle data.");
+  if (!json?.data) {
+    console.error("[Puzzle generation] API response is missing puzzle data:", responseText.slice(0, 500));
+    throw new Error("We couldn’t load a puzzle just now. Please try again.");
+  }
   return json.data;
 };
 
